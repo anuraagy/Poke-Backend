@@ -21,6 +21,8 @@ ActiveRecord::Schema.define(version: 2019_02_01_010257) do
     t.boolean "public", default: true, null: false
     t.bigint "creator_id", null: false
     t.bigint "caller_id"
+    t.datetime "will_trigger_at", null: false
+    t.datetime "triggered_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["caller_id"], name: "index_reminders_on_caller_id"
@@ -33,6 +35,7 @@ ActiveRecord::Schema.define(version: 2019_02_01_010257) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
+    t.string "name"
     t.string "bio"
     t.string "active", default: "t", null: false
     t.decimal "rating", default: "0.0", null: false

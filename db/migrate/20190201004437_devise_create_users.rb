@@ -15,6 +15,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.2]
       t.datetime :remember_created_at
 
       ## Custom
+      t.string  :name
       t.string  :bio
       t.string  :active, null: false, default: true
       t.decimal :rating, null: false, default: 0

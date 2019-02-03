@@ -9,6 +9,8 @@ Rails.application.routes.draw do
         post 'facebook',      to: "facebook",      on: :collection
         post 'google',        to: "google",        on: :collection
       end
+
+      resources :reminders, only: [:create, :update, :destroy]
     end
   end
 end
