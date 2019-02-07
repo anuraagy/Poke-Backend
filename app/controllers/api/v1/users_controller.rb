@@ -1,5 +1,35 @@
 class Api::V1::UsersController < Api::V1::BaseController
-  before_action :authenticate_request!, only: []
+  before_action :authenticate_request!, only: [:index, :show]
+
+  def index
+    # current user profile
+    profile = {}
+    profile['user'] = current_user
+    profile['reminder_count'] = Reminder.where(creator: current_user).count
+    profile['active_reminders'] = Reminder.where(creator: current_user, status: "triggered").count
+    profile['times_reminded_others'] = Reminder.where(caller: current_user).count
+    profile['next_reminder'] = Reminder.where(creator: current_user).order('will_trigger_at').last
+    # user activity goes here next sprint
+    render status: :ok, json: { profile: profile }
+  end
+
+  def show
+    # other user's profile
+    user = User.find_by(email: user_params[:email])
+    if user.present?
+      profile = {}
+      profile['user'] = user
+      profile['reminder_count'] = Reminder.where(creator: current_user).count
+      profile['active_reminders'] = Reminder.where(creator: current_user, status: "triggered").count
+      profile['times_reminded_others'] = Reminder.where(caller: current_user).count
+      # user activity goes here next sprint
+      # limit activity based on friends, etc
+      render status: :ok, json: { profile: profile }
+    else
+      render status: :bad_request, json: { errors: ["User not found"] }
+    end
+
+  end
 
   def authenticate
     user = User.find_by(email: user_params[:email])
