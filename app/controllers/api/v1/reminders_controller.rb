@@ -1,6 +1,20 @@
 class Api::V1::RemindersController < Api::V1::BaseController
   before_action :authenticate_request!
 
+  def index
+    render status: :ok, json: Reminder.where(creator: current_user)
+  end
+
+  def show
+    reminder = Reminder.find(params[:id])
+    if reminder.creator != current_user
+      render status: :unauthorized, json: { success: false, message: "You don't have access to this reminder!" }
+      return
+    end
+
+    render status: :ok, json: { reminder: reminder }
+  end
+
   def create
     reminder = Reminder.new(reminder_params)
 
