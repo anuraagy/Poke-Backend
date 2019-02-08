@@ -174,7 +174,7 @@ Facebook login
 
 * **URL**
 
-  /users
+  /users/:email
 
 * **Method:**
 
