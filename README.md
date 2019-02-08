@@ -114,6 +114,102 @@ Facebook login
                   }`
 
 
+### Get current user profile
+----
+  Gets currently authenticated users profile
+
+* **URL**
+
+  /users
+
+* **Method:**
+
+  `GET`
+  
+*  **URL Params**
+    `none`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "profile": {
+                        "user": {
+                            "id": 1,
+                            "email": "a@b.com",
+                            "name": "aj",
+                            "bio": null,
+                            "active": "t",
+                            "rating": "0.0",
+                            "created_at": "2019-02-07T18:36:39.945Z",
+                            "updated_at": "2019-02-07T18:36:39.945Z"
+                        },
+                        "reminder_count": 1,
+                        "active_reminders": 0,
+                        "times_reminded_others": 0,
+                        "next_reminder": {
+                            "id": 1,
+                            "description": "test",
+                            "status": "new",
+                            "public": true,
+                            "creator_id": 1,
+                            "caller_id": null,
+                            "will_trigger_at": "2019-02-07T18:50:00.000Z",
+                            "triggered_at": null,
+                            "created_at": "2019-02-07T18:41:33.056Z",
+                            "updated_at": "2019-02-07T18:41:33.056Z"
+                        }
+                    }
+                }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ ... ]"
+                    }```
+
+### Get other user profile
+----
+  Gets user profile given email
+
+* **URL**
+
+  /users
+
+* **Method:**
+
+  `GET`
+  
+*  **URL Params**
+    `email=[string]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "profile": {
+                        "user": {
+                            "id": 1,
+                            "email": "a@b.com",
+                            "name": "aj",
+                            "bio": null,
+                            "active": "t",
+                            "rating": "0.0",
+                            "created_at": "2019-02-07T18:36:39.945Z",
+                            "updated_at": "2019-02-07T18:36:39.945Z"
+                        },
+                        "reminder_count": 1,
+                        "active_reminders": 0,
+                        "times_reminded_others": 0,
+                    }
+                }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ "User not found", ... ]"
+                    }```
+
 ## Reminders
 
 ### Create reminder
@@ -194,6 +290,75 @@ Facebook login
                       "errors": "[ ... ]"
                     }```
 
+### Reminder History
+----
+  Get reminder history for currently authenticated user
+
+* **URL:** <br />
+  /reminders
+
+* **Method:** <br />
+  `GET`
+
+* **Headers**: <br />
+  `Authorization: Bearer <auth_token>`
+
+*  **URL Params**: <br />
+  none
+
+* **Success Response:**
+  * **Code:** 200 <br />
+    **Content:** ```[{
+                      "id:" 1,
+                      "public": true,
+                      "status": "New"
+                      "creator_id": 1,
+                      "caller_id": 2,
+                      "will_trigger_at": "2018-10-12T00:00:00Z",
+                    }, ... ] ```
+ 
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ ... ]"
+                    }```
+
+### Get specific reminder
+----
+  Get reminder of id for currently authenticated user
+
+* **URL:** <br />
+  /reminders/:id
+
+* **Method:** <br />
+  `GET`
+
+* **Headers**: <br />
+  `Authorization: Bearer <auth_token>`
+
+*  **URL Params**: <br />
+  **Required**
+  `id=[integer]`
+
+* **Success Response:**
+  * **Code:** 200 <br />
+    **Content:** ```{
+                        reminder: {
+                            "id:" 1,
+                            "public": true,
+                            "status": "New"
+                            "creator_id": 1,
+                            "caller_id": 2,
+                            "will_trigger_at": "2018-10-12T00:00:00Z",
+                        }
+                    }```
+ 
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ ... ]"
+                    }```
+
 ### Delete reminder
 ----
   Delete a reminder with the current user as creator
@@ -223,3 +388,4 @@ Facebook login
     **Content:** ```{
                       "errors": "[ ... ]"
                     }```
+
