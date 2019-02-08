@@ -13,7 +13,6 @@ module Request
           password: user.password
         }
       @token = json['auth_token']
-      @user = user
     end
 
     def auth_headers

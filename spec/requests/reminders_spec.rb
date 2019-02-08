@@ -8,7 +8,13 @@ describe 'Reminders API' do
       password: "password"
     }
     @user = User.create!(user_params)
+    @reminder = Reminder.create!({
+      creator: @user,
+      description: "test",
+      will_trigger_at: Time.now + 10.minutes,
 
+    })
+  
     user2_params = {
       name: "Test2",
       email: "test2@test.com", 
@@ -75,7 +81,6 @@ describe 'Reminders API' do
             will_trigger_at: Time.now + 10.minutes
           },
           headers: auth_headers
-        
         expect(response).to have_http_status(:ok)
       end
     end    
@@ -190,4 +195,27 @@ describe 'Reminders API' do
       end
     end    
   end
+
+  describe 'Reminder history' do
+    describe 'Valid' do
+      it 'get reminder history for user with no reminders' do
+        http_login(@user2)
+        get '/api/v1/reminders',
+          headers: auth_headers
+        resp = JSON.parse(response.body)
+        expect(resp).to be_kind_of(Array)
+        expect(resp).to be_empty
+      end
+
+      it 'get reminder history for user with reminders' do
+        get '/api/v1/reminders',
+          headers: auth_headers
+        resp = JSON.parse(response.body)
+        expect(resp).to be_kind_of(Array)
+        expect(resp.size).to eq 1
+        expect(resp.find { |i| i['id'] == @reminder.id }).to_not be_nil
+      end
+    end
+  end
+
 end

@@ -180,4 +180,111 @@ describe 'Users API' do
       end
     end
   end
+  describe 'Current user profile' do
+    describe 'Valid' do
+      before :each do 
+        user_params = {
+          name: "Test",
+          email: "test@test.com", 
+          password: "password"
+        }
+        @user = User.create!(user_params)
+        @reminder = Reminder.create!({
+          creator: @user,
+          description: "test",
+          will_trigger_at: Time.now + 10.minutes,
+    
+        })
+        reminder1 = Reminder.create!({
+          creator: @user,
+          description: "test1",
+          will_trigger_at: Time.now + 15.minutes,
+    
+        })
+        reminder2 = Reminder.create!({
+          creator: @user,
+          description: "test2",
+          will_trigger_at: Time.now + 6.minutes,
+          status: 'triggered'
+    
+        })
+        http_login(@user)
+      end
+
+      it 'current user can get their own profile' do
+        get '/api/v1/users',
+          headers: auth_headers
+          resp = JSON.parse(response.body)['profile']
+          expect(resp['user']['id']).to eq @user.id
+          expect(resp['reminder_count']).to eq 3
+          expect(resp['active_reminders']).to eq 2
+          expect(resp['times_reminded_others']).to eq 0
+          expect(resp['next_reminder']['id']).to eq @reminder.id
+          expect(response).to have_http_status :ok
+      end
+    end
+    describe 'Invalid' do
+      it 'user not authenticated' do
+        get '/api/v1/users'
+        expect(response).to have_http_status :unauthorized
+      end
+    end
+  end
+
+  describe 'Other user profile' do
+    describe 'Valid' do
+      before :each do 
+        user_params = {
+          name: "Test",
+          email: "test@test1.com", 
+          password: "password"
+        }
+        @user1 = User.create!(user_params)
+        user_params = {
+          name: "Test",
+          email: "test@test.com", 
+          password: "password"
+        }
+        @user = User.create!(user_params)
+        @reminder = Reminder.create!({
+          creator: @user,
+          description: "test",
+          will_trigger_at: Time.now + 10.minutes,
+    
+        })
+        reminder1 = Reminder.create!({
+          creator: @user,
+          description: "test1",
+          will_trigger_at: Time.now + 15.minutes,
+    
+        })
+        reminder2 = Reminder.create!({
+          creator: @user,
+          description: "test2",
+          will_trigger_at: Time.now + 6.minutes,
+          status: 'triggered'
+    
+        })
+        http_login(@user1)
+      end
+
+      it 'current user can get others profile' do
+        get "/api/v1/users/#{@user.email}",
+          headers: auth_headers
+          resp = JSON.parse(response.body)['profile']
+          expect(resp['user']['id']).to eq @user.id
+          expect(resp['reminder_count']).to eq 3
+          expect(resp['active_reminders']).to eq 2
+          expect(resp['times_reminded_others']).to eq 0
+          expect(resp['next_reminder']).to be_nil
+          expect(response).to have_http_status :ok
+      end
+    end
+    describe 'Invalid' do
+      it 'user not authenticated' do
+        get '/api/v1/users'
+        expect(response).to have_http_status :unauthorized
+      end
+    end
+  end
 end
