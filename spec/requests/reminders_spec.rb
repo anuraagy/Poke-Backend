@@ -9,6 +9,7 @@ describe 'Reminders API' do
     }
     @user = User.create!(user_params)
     @reminder = Reminder.create!({
+      title: "New",
       creator: @user,
       description: "test",
       will_trigger_at: Time.now + 10.minutes,
@@ -31,6 +32,7 @@ describe 'Reminders API' do
       it "no description sent in body" do
         post '/api/v1/reminders',
           params: {
+            title: "New",
             status: "New", 
             public: true,
             creator_id: @user.id,
@@ -45,6 +47,7 @@ describe 'Reminders API' do
       it "no creator sent in body" do
         post '/api/v1/reminders',
           params: {
+            title: "New",
             description: "Test description", 
             public: true,
             status: "nNw",
@@ -59,6 +62,7 @@ describe 'Reminders API' do
       it "no trigger time sent in body" do
         post '/api/v1/reminders',
           params: {
+            title: "New",
             description: "Test description", 
             public: true,
             status: "New",
@@ -74,6 +78,7 @@ describe 'Reminders API' do
       it "creates a reminder" do 
         post '/api/v1/reminders',
           params: {
+            title: "New",
             description: "Test description",
             status: "New", 
             public: true,
@@ -89,6 +94,7 @@ describe 'Reminders API' do
   describe 'Reminder update' do
     before :each do 
       reminder_params = {
+        title: "New",
         description: "Test description",
         status: "New", 
         public: true,
@@ -103,6 +109,7 @@ describe 'Reminders API' do
       it "nil description sent in body" do
         put "/api/v1/reminders/#{@reminder.id}",
           params: {
+            title: "New",
             description: nil,
             status: "New", 
             public: true,
@@ -118,6 +125,7 @@ describe 'Reminders API' do
       it "nil creator sent in body" do
         put "/api/v1/reminders/#{@reminder.id}",
           params: {
+            title: "New",
             description: "Test description", 
             public: true,
             creator_id: nil,
@@ -133,6 +141,7 @@ describe 'Reminders API' do
       it "nil trigger time sent in body" do
         put "/api/v1/reminders/#{@reminder.id}",
           params: {
+            title: "New",
             description: "Test description", 
             public: true,
             status: "New",
@@ -149,6 +158,7 @@ describe 'Reminders API' do
       it "creates a reminder" do 
         put "/api/v1/reminders/#{@reminder.id}",
           params: {
+            title: "New",
             description: "New description",
             status: "New", 
             public: true,
@@ -165,6 +175,7 @@ describe 'Reminders API' do
   describe 'Reminder destroy' do
     before :each do 
       reminder_params = {
+        title: "New",
         description: "Test description",
         status: "New", 
         public: true,

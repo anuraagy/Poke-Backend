@@ -190,18 +190,21 @@ describe 'Users API' do
         }
         @user = User.create!(user_params)
         @reminder = Reminder.create!({
+          title: "New",
           creator: @user,
           description: "test",
           will_trigger_at: Time.now + 10.minutes,
     
         })
         reminder1 = Reminder.create!({
+          title: "New",
           creator: @user,
           description: "test1",
           will_trigger_at: Time.now + 15.minutes,
     
         })
         reminder2 = Reminder.create!({
+          title: "New",
           creator: @user,
           description: "test2",
           will_trigger_at: Time.now + 6.minutes,
@@ -247,18 +250,21 @@ describe 'Users API' do
         }
         @user = User.create!(user_params)
         @reminder = Reminder.create!({
+          title: "New",
           creator: @user,
           description: "test",
           will_trigger_at: Time.now + 10.minutes,
     
         })
         reminder1 = Reminder.create!({
+          title: "New",
           creator: @user,
           description: "test1",
           will_trigger_at: Time.now + 15.minutes,
     
         })
         reminder2 = Reminder.create!({
+          title: "New",
           creator: @user,
           description: "test2",
           will_trigger_at: Time.now + 6.minutes,
