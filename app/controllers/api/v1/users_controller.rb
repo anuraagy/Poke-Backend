@@ -16,9 +16,6 @@ class Api::V1::UsersController < Api::V1::BaseController
   def show
     # other user's profile
     user = User.find_by(email: user_params[:email])
-    puts user.email
-    puts request.url
-    puts Reminder.where(creator: user).count
     if user.present?
       profile = {}
       profile['user'] = user
