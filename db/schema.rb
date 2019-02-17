@@ -16,6 +16,7 @@ ActiveRecord::Schema.define(version: 2019_02_01_010257) do
   enable_extension "plpgsql"
 
   create_table "reminders", force: :cascade do |t|
+    t.string "title", null: false
     t.string "description", null: false
     t.string "status", default: "new", null: false
     t.boolean "public", default: true, null: false

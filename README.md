@@ -149,6 +149,7 @@ Facebook login
                         "times_reminded_others": 0,
                         "next_reminder": {
                             "id": 1,
+                            "title": "New",
                             "description": "test",
                             "status": "new",
                             "public": true,
@@ -227,6 +228,7 @@ Facebook login
 
 *  **URL Params**: <br />
   **Required:**
+  `title=[string]`
   `description=[string]`
   `status=[string]`
   `public=[boolean]`
@@ -237,6 +239,7 @@ Facebook login
   * **Code:** 200 <br />
     **Content:** ```{
                       "id:" 1,
+                      "title": "New",
                       "public": true,
                       "status": "New"
                       "creator_id": 1,
@@ -277,6 +280,7 @@ Facebook login
   * **Code:** 200 <br />
     **Content:** ```{
                       "id:" 1,
+                      "title": "New",
                       "public": true,
                       "status": "New"
                       "creator_id": 1,
@@ -310,6 +314,7 @@ Facebook login
   * **Code:** 200 <br />
     **Content:** ```[{
                       "id:" 1,
+                      "title": "New",
                       "public": true,
                       "status": "New"
                       "creator_id": 1,
@@ -345,6 +350,7 @@ Facebook login
     **Content:** ```{
                         reminder: {
                             "id:" 1,
+                            "title": "New",
                             "public": true,
                             "status": "New"
                             "creator_id": 1,
