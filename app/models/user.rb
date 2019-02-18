@@ -28,6 +28,27 @@ class User < ApplicationRecord
     user
   end
 
+  def self.login_or_create_from_google(google_params)
+    return unless valid_google_authtoken?(google_params[:google_token], google_params[:email])
+
+    user = User.find_by(google_token: google_params[:google_token])
+
+    if user.blank?
+      user = User.find_by_email(google_params[:email])
+
+      if user.present?
+        user.google_token = google_params[:google_token]
+      else
+        user = User.new(google_params)
+        user.password = google_params[:google_token]
+        user.google_token = google_params[:google_token]
+      end
+    end
+
+    user
+  end
+
+
   def join_reminder_lobby
     return false if ready_to_remind
     update(ready_to_remind: true)
@@ -42,6 +63,13 @@ class User < ApplicationRecord
   def self.valid_fb_authtoken?(fb_authtoken, email)
     response = HTTParty.get("https://graph.facebook.com/me?"\
       "access_token=#{fb_authtoken}&fields=email")
+    response["email"].present? && response["email"] == email
+  end
+
+  
+  def self.valid_google_authtoken?(google_authtoken, email)
+    response = HTTParty.get("https://www.googleapis.com/oauth2/v3/tokeninfo?"\
+      "id_token=#{google_authtoken}")
     response["email"].present? && response["email"] == email
   end
 end

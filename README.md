@@ -113,6 +113,43 @@ Facebook login
                       "errors": "This is an invalid authtoken!"
                   }`
 
+### Login a google user
+----
+
+Facebook login
+
+* **URL**
+
+  /users/google
+
+* **Method:**
+
+  `POST`
+  
+*  **URL Params**
+
+   **Required:**
+
+   `name=[string]`
+   `email=[string]`
+   `google_token=[string]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                      "auth_token": "eyJhbGciOiJIUzI1NiJ9.7nefDjhCUnGeGGzr7ypoDtQTiLC66uNI8T8O7FGvnoo.7nefDjhCUnGeGGzr7ypoDtQTiLC66uNI8T8O7FGvnoo"
+                  }`
+
+* **Error Response:**
+
+
+  * **Code:** 401 <br />
+    **Content:** `{
+                      "errors": "This is an invalid authtoken!"
+                  }`
+
+
 
 ### Get current user profile
 ----
