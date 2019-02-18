@@ -2,7 +2,7 @@ class CreateReminders < ActiveRecord::Migration[5.2]
   def change
     create_table :reminders do |t|
       t.string  :title,       null: false
-      t.string  :description, null: false
+      t.string  :description
       t.string  :status,      null: false, default: "new"
       t.boolean :public,      null: false, default: true
 

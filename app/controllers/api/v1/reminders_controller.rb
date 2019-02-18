@@ -65,6 +65,14 @@ class Api::V1::RemindersController < Api::V1::BaseController
     end
   end
 
+  def start
+
+  end
+
+  def complete
+
+  end
+
   private
 
   def reminder_params

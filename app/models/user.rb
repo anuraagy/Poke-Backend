@@ -1,12 +1,12 @@
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
 
   validates :name,   presence: true
   validates :active, presence: true
   validates :rating, presence: true, numericality: { greater_than_or_equal_to: 0 , less_than_or_equal_to: 5 }
+
+  scope :in_reminder_lobby, -> { where(ready_to_remind: true).order(updated_at: :desc) }
+
 
   def self.login_or_create_from_facebook(facebook_params)
     return unless valid_fb_authtoken?(facebook_params[:facebook_token], facebook_params[:email])
@@ -26,6 +26,16 @@ class User < ApplicationRecord
     end
 
     user
+  end
+
+  def join_reminder_lobby
+    return false if ready_to_remind
+    update(ready_to_remind: true)
+  end
+
+  def leave_reminder_lobby
+    return false if !ready_to_remind
+    update(ready_to_remind: false)
   end
 
   

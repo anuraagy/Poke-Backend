@@ -3,7 +3,6 @@ class Reminder < ApplicationRecord
   belongs_to :caller,  :class_name => 'User', optional: true
 
   validates :title,            presence: true
-  validates :description,      presence: true
   validates :status,           presence: true
   validates :public,           presence: true
   validates :creator,          presence: true

@@ -12,7 +12,10 @@ Rails.application.routes.draw do
         get  '/:email',       action: 'show',      on: :collection, :constraints  => { :email => /[0-z\.]+/ }
       end
 
-      resources :reminders, only: [:index, :show, :create, :update, :destroy]
+      resources :reminders, only: [:index, :show, :create, :update, :destroy] do
+        post 'start', to: "start", on: :collection
+        post 'end',   to: "end",   on: :collection
+      end
     end
   end
 end
