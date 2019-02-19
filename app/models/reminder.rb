@@ -17,6 +17,8 @@ class Reminder < ApplicationRecord
     msg['reminder'] = self.to_json
     msg['user'] = reminding_user.to_json
     UserChannel.broadcast_to(reminding_user, message: msg)
+    self.status = "triggered"
+    self.triggered_at = Time.now
   end
 
   def valid_trigger_time?
