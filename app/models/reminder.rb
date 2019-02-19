@@ -20,9 +20,9 @@ class Reminder < ApplicationRecord
   end
 
   def valid_trigger_time?
-    if will_trigger_at.present? && will_trigger_at < Time.now + 5.minutes
-      errors.add(:will_trigger_at, "Has to be at least 5 minutes in the future")
-    end
+    #if will_trigger_at.present? && will_trigger_at < Time.now + 5.minutes
+    #  errors.add(:will_trigger_at, "Has to be at least 5 minutes in the future")
+    #end
   end
 
   def triggered?
