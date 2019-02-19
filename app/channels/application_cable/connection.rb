@@ -4,6 +4,7 @@ module ApplicationCable
 
     def connect
       current_user = authenticated_user
+      puts "Name: #{current_user.name}"
       current_user.join_reminder_lobby
     end
 
@@ -11,16 +12,21 @@ module ApplicationCable
 
     def authenticated_user
       if verified_token?
-        @current_user ||= User.find_by_email(auth_token[:email])
-        reject_unauthorized_connection if @current_user.blank?
+        current_user ||= User.find_by_email(auth_token[:email])
+        
+        if current_user.blank?
+          reject_unauthorized_connection
+        else
+          return current_user
+        end
       else
         reject_unauthorized_connection
       end
     end
 
     def http_token
-      @http_token ||= if request.headers['Authorization'].present?
-        request.headers['Authorization'].split(' ').last
+      @http_token ||= if request.params[:authorization].present?
+        request.params[:authorization].split(' ').last
       end
     end
 

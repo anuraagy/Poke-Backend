@@ -8,7 +8,7 @@
 user_params = {
   name: "Test",
   email: "test@test.com",
-  password: "Password"
+  password: "Password",
 }
 
 User.create!(user_params)

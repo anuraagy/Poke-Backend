@@ -4,6 +4,7 @@ class CreateReminders < ActiveRecord::Migration[5.2]
       t.string  :title,       null: false
       t.string  :description
       t.string  :status,      null: false, default: "new"
+      t.string  :type
       t.boolean :public,      null: false, default: true
 
       t.references :creator, null: false
