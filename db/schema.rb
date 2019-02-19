@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 2019_02_01_010257) do
   create_table "reminders", force: :cascade do |t|
     t.string "title", null: false
     t.string "description"
+    t.string "reminder_text"
     t.string "status", default: "new", null: false
     t.boolean "public", default: true, null: false
     t.bigint "creator_id", null: false
@@ -55,6 +56,7 @@ ActiveRecord::Schema.define(version: 2019_02_01_010257) do
     t.string "name"
     t.string "bio"
     t.string "active", default: "t", null: false
+    t.string "twilio_id", null: false
     t.decimal "rating", default: "0.0", null: false
     t.boolean "ready_to_remind", default: false
     t.datetime "created_at", null: false

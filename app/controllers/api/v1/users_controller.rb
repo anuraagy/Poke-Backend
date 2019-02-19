@@ -86,6 +86,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def facebook_params
     params.permit(
       :name,
+      :twilio_id,
       :email,
       :facebook_token
     )
@@ -94,6 +95,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def google_params
     params.permit(
       :name,
+      :twilio_id,
       :email,
       :google_token
     )
@@ -101,6 +103,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def user_params
     params.permit(
+      :twilio_id,
       :name,
       :email, 
       :password, 

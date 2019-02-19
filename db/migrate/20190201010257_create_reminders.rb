@@ -3,6 +3,7 @@ class CreateReminders < ActiveRecord::Migration[5.2]
     create_table :reminders, force: true do |t|
       t.string  :title,       null: false
       t.string  :description
+      t.string  :reminder_text
       t.string  :status,      null: false, default: "new"
       t.boolean :public,      null: false, default: true
 
@@ -13,6 +14,7 @@ class CreateReminders < ActiveRecord::Migration[5.2]
       t.datetime :triggered_at
 
       t.integer :job_id
+
 
       t.timestamps
     end

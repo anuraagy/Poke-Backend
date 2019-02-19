@@ -18,9 +18,10 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.2]
       t.string  :name
       t.string  :bio
       t.string  :active, null: false, default: true
+      t.string  :twilio_id,   null: false
       t.decimal :rating, null: false, default: 0
       t.boolean :ready_to_remind, default: false
-
+      
       ## Trackable
       # t.integer  :sign_in_count, default: 0, null: false
       # t.datetime :current_sign_in_at
