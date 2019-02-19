@@ -12,7 +12,11 @@ class Reminder < ApplicationRecord
 
   def send_reminder!
     # send the reminder
-
+    reminding_user = User.in_reminder_lobby.first
+    msg = {}
+    msg['reminder'] = self.to_json
+    msg['user'] = reminding_user.to_json
+    UserChannel.broadcast_to(reminding_user, message: msg)
   end
 
   def valid_trigger_time?
