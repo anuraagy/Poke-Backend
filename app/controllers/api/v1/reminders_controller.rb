@@ -19,6 +19,8 @@ class Api::V1::RemindersController < Api::V1::BaseController
     reminder = Reminder.new(reminder_params)
 
     if reminder.save
+      job = Delayed::Job.enqueue(ReminderJob.new(reminder.id), 0, reminder.will_trigger_at)
+      reminder.update_attribute(:job_id, job.id)
       render status: 200, json: { reminder: reminder.as_json }
     else
       render status: 400, json: { errors: reminder.errors.full_messages }
@@ -39,6 +41,10 @@ class Api::V1::RemindersController < Api::V1::BaseController
     end
 
     if reminder.update(reminder_params)
+      job = Delayed::Job.find(reminder.job_id)
+      if job.present?
+        job.update_attribute(:run_at, reminder.will_trigger_at)
+      end
       render status: 200, json: { reminder: reminder.as_json }
     else
       render status: 400, json: { errors: reminder.errors.full_messages }
@@ -59,6 +65,10 @@ class Api::V1::RemindersController < Api::V1::BaseController
     end
 
     if reminder.destroy
+      job = Delayed::Job.find(reminder.job_id)
+      if job.present?
+        job.destroy
+      end
       render status: 200, json: { success: true }
     else
       render status: 400, json: { success: false, message: "There was an error!" }

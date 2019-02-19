@@ -10,6 +10,10 @@ class Reminder < ApplicationRecord
 
   validate :valid_trigger_time?
 
+  def send_reminder!
+    # send the reminder
+
+  end
 
   def valid_trigger_time?
     if will_trigger_at.present? && will_trigger_at < Time.now + 5.minutes
