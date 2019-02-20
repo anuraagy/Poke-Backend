@@ -88,7 +88,8 @@ class Api::V1::UsersController < Api::V1::BaseController
       :name,
       :twilio_id,
       :email,
-      :facebook_token
+      :facebook_token,
+      :phone_number
     )
   end
 
@@ -97,7 +98,8 @@ class Api::V1::UsersController < Api::V1::BaseController
       :name,
       :twilio_id,
       :email,
-      :google_token
+      :google_token,
+      :phone_number
     )
   end
 
@@ -109,7 +111,8 @@ class Api::V1::UsersController < Api::V1::BaseController
       :password, 
       :bio, 
       :active, 
-      :rating
+      :rating,
+      :phone_number
     )
   end
 end
