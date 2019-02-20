@@ -116,7 +116,7 @@ Facebook login
 ### Login a google user
 ----
 
-Facebook login
+Google login
 
 * **URL**
 
@@ -432,3 +432,44 @@ Facebook login
                       "errors": "[ ... ]"
                     }```
 
+
+## Twilio
+
+### Get Twilio access token
+----
+  Gets a Twilio access token for currently authenticated user
+
+* **URL**
+
+  /twilio/access_token
+
+* **Method:**
+
+  `POST`
+  
+*  **URL Params**
+
+   **Required:**
+   `type=[string] ('voice' or 'chat')`
+   
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+  "access_token": "eyJ...",
+  "type": "voice"
+}`
+  
+* **Error Response:**
+
+  * **Code:** 401 <br />
+    **Content:** `{
+                      "errors": {
+                          [
+                            "...",
+                            "...",
+                            ..
+                          ]
+                      }
+                  }`
