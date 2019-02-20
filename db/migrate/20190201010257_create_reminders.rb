@@ -15,6 +15,7 @@ class CreateReminders < ActiveRecord::Migration[5.2]
 
       t.integer :job_id
 
+
       t.timestamps
     end
 

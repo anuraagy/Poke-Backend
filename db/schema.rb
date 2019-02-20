@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 2019_02_01_010257) do
     t.string "name"
     t.string "bio"
     t.string "active", default: "t", null: false
+    t.string "twilio_id", null: false
     t.decimal "rating", default: "0.0", null: false
     t.boolean "ready_to_remind", default: false
     t.string "twilio_id"
