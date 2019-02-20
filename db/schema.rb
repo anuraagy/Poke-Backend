@@ -59,7 +59,6 @@ ActiveRecord::Schema.define(version: 2019_02_01_010257) do
     t.string "twilio_id", null: false
     t.decimal "rating", default: "0.0", null: false
     t.boolean "ready_to_remind", default: false
-    t.string "twilio_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
