@@ -12,7 +12,7 @@ class Reminder < ApplicationRecord
 
   def send_reminder!
     # send the reminder
-    reminding_user = User.in_reminder_lobby.first
+    reminding_user = User.in_reminder_lobby(creator).first
     puts reminding_user.present?
     if reminding_user.present?
       msg = {}
