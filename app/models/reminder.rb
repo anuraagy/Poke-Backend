@@ -23,6 +23,7 @@ class Reminder < ApplicationRecord
       UserChannel.broadcast_to(reminding_user, msg.to_json)
       reminding_user.leave_reminder_lobby
       self.status = "triggered"
+      self.caller = reminding_user
       self.triggered_at = Time.now
       self.save
     else
