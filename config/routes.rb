@@ -13,6 +13,7 @@ Rails.application.routes.draw do
         post 'google',        to: "google",        on: :collection
 
         get  '/:email',       action: 'show',      on: :collection, :constraints  => { :email => /[0-z\.]+/ }
+        get  '/profile_by_id/:id',          action: 'show_id',   on: :collection
       end
 
       resources :reminders, only: [:index, :show, :create, :update, :destroy] do

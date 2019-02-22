@@ -13,6 +13,23 @@ class Api::V1::UsersController < Api::V1::BaseController
     render status: :ok, json: { profile: profile }
   end
 
+  def show_id
+        # other user's profile
+        user = User.find(user_params[:id])
+        if user.present?
+          profile = {}
+          profile['user'] = user
+          profile['reminder_count'] = Reminder.where(creator: user).count
+          profile['active_reminders'] = Reminder.where(creator: user).where.not(status: 'triggered').count
+          profile['times_reminded_others'] = Reminder.where(caller: user).count
+          # user activity goes here next sprint
+          # limit activity based on friends, etc
+          render status: :ok, json: { profile: profile }
+        else
+          render status: :bad_request, json: { errors: ["User not found"] }
+        end
+  end
+
   def show
     # other user's profile
     user = User.find_by(email: user_params[:email])
@@ -105,6 +122,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def user_params
     params.permit(
+      :id,
       :twilio_id,
       :name,
       :email, 
