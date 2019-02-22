@@ -59,6 +59,8 @@ ActiveRecord::Schema.define(version: 2019_02_01_010257) do
     t.string "phone_number"
     t.decimal "rating", default: "0.0", null: false
     t.boolean "ready_to_remind", default: false
+    t.string "facebook_token"
+    t.string "google_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
