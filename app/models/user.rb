@@ -4,7 +4,6 @@ class User < ApplicationRecord
   validates :name,      presence: true
   validates :active,    presence: true
   validates :rating,    presence: true, numericality: { greater_than_or_equal_to: 0 , less_than_or_equal_to: 5 }
-  validates :twilio_id, presence: true
 
   scope :in_reminder_lobby, -> { where(ready_to_remind: true).order(updated_at: :desc) }
 

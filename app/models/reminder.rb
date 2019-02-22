@@ -13,14 +13,20 @@ class Reminder < ApplicationRecord
   def send_reminder!
     # send the reminder
     reminding_user = User.in_reminder_lobby.first
-    msg = {}
-    msg['reminder'] = self.to_json
-    msg['user'] = self.creator.to_json
-    UserChannel.broadcast_to(reminding_user, message: msg)
-    reminding_user.leave_reminder_lobby
-    self.status = "triggered"
-    self.triggered_at = Time.now
-    self.save
+    puts reminding_user.present?
+    if reminding_user.present?
+      msg = {}
+      msg['reminder'] = self.to_json
+      msg['user'] = self.creator.to_json
+      UserChannel.broadcast_to(reminding_user, msg)
+      reminding_user.leave_reminder_lobby
+      self.status = "triggered"
+      self.triggered_at = Time.now
+      self.save
+    else
+      # push notification
+    end
+
   end
 
   def valid_trigger_time?
