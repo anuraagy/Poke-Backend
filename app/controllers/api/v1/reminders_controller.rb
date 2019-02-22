@@ -41,7 +41,7 @@ class Api::V1::RemindersController < Api::V1::BaseController
     end
 
     if reminder.update(reminder_params)
-      job = Delayed::Job.find(reminder.job_id)
+      job = Delayed::Job.find_by_id(reminder.job_id)
       if job.present?
         job.update_attribute(:run_at, reminder.will_trigger_at)
       end
