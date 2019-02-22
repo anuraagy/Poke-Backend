@@ -16,9 +16,11 @@ class Reminder < ApplicationRecord
     puts reminding_user.present?
     if reminding_user.present?
       msg = {}
-      msg['reminder'] = self.to_json
-      msg['user'] = self.creator.to_json
-      UserChannel.broadcast_to(reminding_user, msg)
+      msg['phone_number'] = self.creator.phone_number
+      msg['title'] = self.title
+      msg['time'] = self.will_trigger_at
+      msg['name'] = self.creator.name
+      UserChannel.broadcast_to(reminding_user, msg.to_json)
       reminding_user.leave_reminder_lobby
       self.status = "triggered"
       self.triggered_at = Time.now
