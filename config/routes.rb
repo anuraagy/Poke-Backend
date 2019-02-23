@@ -7,7 +7,7 @@ Rails.application.routes.draw do
         post "place_call", to: 'place_call', on: :collection
       end
 
-      resources :users, only: [:index] do
+      resources :users, only: [:index, :update] do
         post 'register',      to: "register",      on: :collection
         post 'authenticate',  to: "authenticate",  on: :collection
         post 'confirm',       to: "confirm",       on: :collection

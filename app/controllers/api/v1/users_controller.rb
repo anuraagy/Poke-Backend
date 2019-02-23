@@ -98,6 +98,18 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
   end
 
+  def update
+    user = User.find(params[:id])
+
+    if user.update(user_params)
+      render render status: :ok, json: {
+        auth_token: JSONWebToken.encode(user.as_json.symbolize_keys)
+      }
+    else
+      render status: :bad_request, json: { errors: user.errors.full_messages.as_json }
+    end
+  end
+
   private
 
   def facebook_params
