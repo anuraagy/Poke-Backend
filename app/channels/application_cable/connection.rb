@@ -5,7 +5,6 @@ module ApplicationCable
     def connect
       current_user = authenticated_user
       puts "Name: #{current_user.name}"
-      current_user.join_reminder_lobby
     end
 
     private
