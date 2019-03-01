@@ -376,6 +376,7 @@ Google login
   `public=[boolean]`
   `creator_id=[integer]`
   `will_trigger_at=[datetime]`
+  `push=[boolean]`
 
 * **Success Response:**
   * **Code:** 200 <br />
@@ -387,6 +388,7 @@ Google login
                       "creator_id": 1,
                       "caller_id": null,
                       "will_trigger_at": "2018-10-12T00:00:00Z",
+                      "push": false
                     } ```
  
 * **Error Response:**
