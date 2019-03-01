@@ -43,6 +43,45 @@ http://167.99.154.236:3005/api/v1/
                       }
                   }`
 
+### Update User Account Info
+----
+  Updates a user and returns the jwt
+
+* **URL**
+
+  /users/:id
+
+* **Method:**
+
+  `PUT`
+  
+*  **URL Params**
+
+   **Required:**
+
+   `bio=[string]`
+   `phone_number=[string]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                      "auth_token": "eyJhbGciOiJIUzI1NiJ9.7nefDjhCUnGeGGzr7ypoDtQTiLC66uNI8T8O7FGvnoo.7nefDjhCUnGeGGzr7ypoDtQTiLC66uNI8T8O7FGvnoo"
+                  }`
+  
+* **Error Response:**
+
+  * **Code:** 401 <br />
+    **Content:** `{
+                      "errors": {
+                          [
+                            "Email has been taken",
+                            "Name too short",
+                            ..
+                          ]
+                      }
+                  }`
+
 ### Authenticate User
 ----
   Authenticates a user and returns their jwt
