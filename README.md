@@ -56,9 +56,8 @@ http://167.99.154.236:3005/api/v1/
   `PUT`
   
 *  **URL Params**
-
-   **Required:**
-
+   `profile_picture=[string]`
+   `name=[string]`
    `bio=[string]`
    `phone_number=[string]`
 
@@ -72,6 +71,73 @@ http://167.99.154.236:3005/api/v1/
 * **Error Response:**
 
   * **Code:** 401 <br />
+    **Content:** `{
+                      "errors": {
+                          [
+                            "Email has been taken",
+                            "Name too short",
+                            ..
+                          ]
+                      }
+                  }`
+
+### Change user password
+----
+  Given old and new password, change user password
+
+* **URL**
+
+  /users/:id
+
+* **Method:**
+
+  `POST`
+  
+*  **URL Params**
+   `old_password=[string]`
+   `new_password=[string]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "success": true
+                  }`
+  
+* **Error Response:**
+
+  * **Code:** 403 <br />
+    **Content:** `{
+                    "errors": [
+                      "The old password you entered is incorrect."
+                    ]
+                  }`
+
+### Get profile picture
+----
+  Get user profile picture given email
+
+* **URL**
+
+  /users/:email/profile_picture
+
+* **Method:**
+
+  `PUT`
+  
+*  **URL Params**
+   `email=[string]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                      "profile_picture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQIAH..."
+                  }`
+  
+* **Error Response:**
+
+  * **Code:** 400 <br />
     **Content:** `{
                       "errors": {
                           [
