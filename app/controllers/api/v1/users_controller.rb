@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::BaseController
-  before_action :authenticate_request!, only: [:index, :show]
+  before_action :authenticate_request!, only: [:index, :show, :update, :change_password]
 
   def index
     # current user profile
@@ -98,6 +98,36 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
   end
 
+  def change_password
+    user = User.find_by(id: params[:id])
+
+    if user.blank?
+      render status: :unauthorized, json: { errors: ["There is no user with that id"] }
+    elsif user != current_user
+      render status: :forbidden, json: { errors: ["You do not have access to this user"] }
+    elsif !user.valid_password?(params[:old_password])
+      render status: :forbidden, json: { errors: ["The old password you entered is incorrect."] }
+    elsif user&.update(password: params[:new_password])
+      render status: :ok, json: { success: true }
+    else
+      render status: 400, json: { errors: user.errors.full_messages }
+    end
+  end
+
+  def update
+    user = User.find_by(id: params[:id])
+
+    if user != current_user
+      render status: :forbidden, json: { errors: ["You do not have access to this user"] }
+    elsif user&.update(user_params)
+      render status: :ok, json: {
+        auth_token: JSONWebToken.encode(user.as_json.symbolize_keys)
+      }
+    else
+      render status: :unauthorized, json: { errors: user.errors.full_messages }
+    end
+  end
+
   private
 
   def facebook_params
@@ -130,7 +160,8 @@ class Api::V1::UsersController < Api::V1::BaseController
       :bio, 
       :active, 
       :rating,
-      :phone_number
+      :phone_number,
+      :profile_picture
     )
   end
 end
