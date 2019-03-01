@@ -123,7 +123,7 @@ http://167.99.154.236:3005/api/v1/
 
 * **Method:**
 
-  `PUT`
+  `GET`
   
 *  **URL Params**
    `email=[string]`
