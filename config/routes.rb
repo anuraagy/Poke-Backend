@@ -15,8 +15,10 @@ Rails.application.routes.draw do
         post 'facebook',      to: "facebook",      on: :collection
         post 'google',        to: "google",        on: :collection
 
-        get  '/:email',       action: 'show',      on: :collection, :constraints  => { :email => /[0-z\.]+/ }
-        get  '/profile_by_id/:id',          action: 'show_id',   on: :collection
+        get  '/:email',       action: 'show', on: :collection, :constraints  => { :email => /[0-z\.]+/ }
+        get  '/profile_by_id/:id', action: 'show_id',   on: :collection
+        get  '/:email/profile_picture', action: 'profile_picture',
+          on: :collection, :constraints  => { :email => /[0-z\.]+/ }
       end
 
       resources :reminders, only: [:index, :show, :create, :update, :destroy] do

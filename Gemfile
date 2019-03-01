@@ -19,7 +19,7 @@ gem 'whenever'
 gem 'delayed_job_active_record'
 gem 'daemons'
 gem 'rack-cors', require: 'rack/cors'
-gem 'active_model_serializers'
+gem 'active_model_serializers', '~> 0.10.0'
 gem 'bootsnap'
 
 # Validators

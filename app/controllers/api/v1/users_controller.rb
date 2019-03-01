@@ -1,10 +1,13 @@
 class Api::V1::UsersController < Api::V1::BaseController
-  before_action :authenticate_request!, only: [:index, :show, :update, :change_password]
+  before_action :authenticate_request!,
+    only: [:index, :show, :update, :change_password, :profile_picture]
 
   def index
     # current user profile
     profile = {}
-    profile['user'] = current_user
+    #render status: :ok, json: current_user
+    #return
+    profile['user'] = UserSerializer.new(current_user)
     profile['reminder_count'] = Reminder.where(creator: current_user).count
     profile['active_reminders'] = Reminder.where(creator: current_user).where.not(status: 'triggered').count
     profile['times_reminded_others'] = Reminder.where(caller: current_user).count
@@ -18,7 +21,7 @@ class Api::V1::UsersController < Api::V1::BaseController
         user = User.find(user_params[:id])
         if user.present?
           profile = {}
-          profile['user'] = user
+          profile['user'] = UserSerializer.new(user)
           profile['reminder_count'] = Reminder.where(creator: user).count
           profile['active_reminders'] = Reminder.where(creator: user).where.not(status: 'triggered').count
           profile['times_reminded_others'] = Reminder.where(caller: user).count
@@ -35,7 +38,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     user = User.find_by(email: user_params[:email])
     if user.present?
       profile = {}
-      profile['user'] = user
+      profile['user'] = UserSerializer.new(user)
       profile['reminder_count'] = Reminder.where(creator: user).count
       profile['active_reminders'] = Reminder.where(creator: user).where.not(status: 'triggered').count
       profile['times_reminded_others'] = Reminder.where(caller: user).count
@@ -126,6 +129,16 @@ class Api::V1::UsersController < Api::V1::BaseController
     else
       render status: :unauthorized, json: { errors: user.errors.full_messages }
     end
+  end
+
+  def profile_picture
+      # other user's profile
+      user = User.find_by(email: user_params[:email])
+      if user.present?
+        render status: :ok, json: { profile_picture: user.profile_picture }
+      else
+        render status: :bad_request, json: { errors: ["User not found"] }
+      end
   end
 
   private
