@@ -4,14 +4,19 @@ class Reminder < ApplicationRecord
 
   validates :title,            presence: true
   validates :status,           presence: true
-  validates :public,           presence: true
   validates :creator,          presence: true
   validates :will_trigger_at,  presence: true
+  validates_inclusion_of :public, in: [true, false]
+  validates_inclusion_of :push  , in: [true, false]
 
   validate :valid_trigger_time?
 
   def send_reminder!
     # send the reminder
+    if self.push
+      # send push notification
+      return
+    end
     reminding_user = User.in_reminder_lobby(creator).first
     puts reminding_user.present?
     if reminding_user.present?
