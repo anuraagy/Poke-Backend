@@ -141,9 +141,8 @@ http://167.99.154.236:3005/api/v1/
     **Content:** `{
                       "errors": {
                           [
-                            "Email has been taken",
-                            "Name too short",
-                            ..
+                            "User not found",
+                            ...
                           ]
                       }
                   }`
