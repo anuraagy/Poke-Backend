@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_01_010257) do
+ActiveRecord::Schema.define(version: 2019_03_03_034512) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,12 +30,32 @@ ActiveRecord::Schema.define(version: 2019_02_01_010257) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
+  create_table "friend_requests", force: :cascade do |t|
+    t.bigint "sender_id", null: false
+    t.bigint "receiver_id", null: false
+    t.string "status", default: "sent", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["receiver_id"], name: "index_friend_requests_on_receiver_id"
+    t.index ["sender_id"], name: "index_friend_requests_on_sender_id"
+  end
+
+  create_table "friendships", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "friend_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["friend_id"], name: "index_friendships_on_friend_id"
+    t.index ["user_id"], name: "index_friendships_on_user_id"
+  end
+
   create_table "reminders", force: :cascade do |t|
     t.string "title", null: false
     t.string "description"
     t.string "status", default: "new", null: false
     t.string "type"
     t.boolean "public", default: true, null: false
+    t.boolean "push", default: false, null: false
     t.bigint "creator_id", null: false
     t.bigint "caller_id"
     t.datetime "will_trigger_at", null: false
@@ -62,6 +82,7 @@ ActiveRecord::Schema.define(version: 2019_02_01_010257) do
     t.string "facebook_token"
     t.string "google_token"
     t.string "profile_picture"
+    t.boolean "activity_hidden", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true

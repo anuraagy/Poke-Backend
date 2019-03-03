@@ -132,13 +132,95 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def profile_picture
-      # other user's profile
-      user = User.find_by(email: user_params[:email])
-      if user.present?
-        render status: :ok, json: { profile_picture: user.profile_picture }
-      else
-        render status: :bad_request, json: { errors: ["User not found"] }
-      end
+    # other user's profile
+    user = User.find_by(email: user_params[:email])
+    if user.present?
+      render status: :ok, json: { profile_picture: user.profile_picture }
+    else
+      render status: :bad_request, json: { errors: ["User not found"] }
+    end
+  end
+
+  def friends
+    user = User.find_by(id: params[:id])
+
+    if user.blank?
+      render status: :unauthorized, json: { errors: ["There is no user with that id"] }
+    else
+      render status: :ok, json: { friends: user.friends.as_json}
+    end
+  end
+
+  def friend_requests_sent
+    user = User.find_by(id: params[:id])
+
+    if user.blank?
+      render status: :unauthorized, json: { errors: ["There is no user with that id"] }
+    else
+      render status: :ok, json: { friends: user.friend_requests_sent.where.not(status: "accepted").as_json }
+    end
+  end
+
+  def friend_requests_received
+    user = User.find_by(id: params[:id])
+
+    if user.blank?
+      render status: :unauthorized, json: { errors: ["There is no user with that id"] }
+    else
+      render status: :ok, json: { friends: user.friend_requests_received.where.not(status: "accepted").as_json }
+    end
+  end
+
+  def send_friend_request
+    user = User.find_by(id: params[:id])
+
+    if user.blank?
+      render status: :unauthorized, json: { errors: ["There is no user with that id"] }
+      return
+    elsif user != current_user
+      render status: :forbidden, json: { errors: ["You do not have access to this user"] }
+      return
+    end
+
+    friend_request = FriendRequest.new(sender: self, receiver: friend)
+
+    if friend_request.save
+      render status: :ok, json: { success: true }
+    else
+      render status: :bad_request, json: { success: false, errors: friend_request.errors.full_messages }
+    end
+  end
+
+  def accept_friend_request
+    user = User.find_by(id: params[:id])
+    friend_request = FriendRequest.find_by(id: params[:friend_request])
+
+    if user.blank?
+      render status: :unauthorized, json: { errors: ["There is no user with that id"] }
+    elsif user != current_user
+      render status: :forbidden, json: { errors: ["You do not have access to this user"] }
+    elsif user != friend_request.receiver
+      render status: :forbidden, json: { errors: ["You do not have access to this friend request"] }
+    else
+      user.accept_friend_request(friend_request)
+      render status: :ok, json: { success: true }
+    end
+  end
+
+  def decline_friend_request
+    user = User.find_by(id: params[:id])
+    friend_request = FriendRequest.find_by(id: params[:friend_request])
+
+    if user.blank?
+      render status: :unauthorized, json: { errors: ["There is no user with that id"] }
+    elsif user != current_user
+      render status: :forbidden, json: { errors: ["You do not have access to this user"] }
+    elsif user != friend_request.receiver
+      render status: :forbidden, json: { errors: ["You do not have access to this friend request"] }
+    else
+      user.decline_friend_request (friend_request)
+      render status: :ok, json: { success: true }
+    end
   end
 
   private

@@ -1,11 +1,51 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
 
+  has_many :friend_requests_sent,     foreign_key: "sender_id",   class_name: "FriendRequest"
+  has_many :friend_requests_received, foreign_key: "receiver_id", class_name: "FriendRequest"
+
+  has_many :reminders_created,  foreign_key: "creator_id", class_name: "Reminder"
+  has_many :reminders_reminded, foreign_key: "caller_id",  class_name: "Reminder"
+
+  has_many :friendships
+  has_many :friends, through: :friendships
+
   validates :name,      presence: true
   validates :active,    presence: true
   validates :rating,    presence: true, numericality: { greater_than_or_equal_to: 0 , less_than_or_equal_to: 5 }
 
   scope :in_reminder_lobby, ->(user) { where(ready_to_remind: true).where.not(id: user.id).order(updated_at: :desc) }
+  scope :search_users, -> (query) { where("name LIKE ? OR email LIKE ?", "%#{query}%", "%#{query}%") }
+
+  def accept_friend_request(friend_request)
+    friends << friend_request.sender 
+  end
+
+  def decline_friend_request(friend_request)
+    friend_request.destroy
+  end
+
+  def hide_profile_activity
+    return if activity_hidden
+    update!(activity_hidden: true)
+  end
+
+  def show_profile_activity
+    return unless activity_hidden
+    update!(activity_hidden: false)
+  end
+
+  def friend_activity
+    friends.map { |friend|  { friend.name => friend.activity }}
+  end
+
+  def activity
+    activity_hash = {}
+    activity_hash["reminders_created"] = reminders_created.to_a
+    activity_hash["remniders_reminded"] = reminders_reminded.to_a
+
+    activity_hash
+  end
 
   def self.login_or_create_from_facebook(facebook_params)
     return unless valid_fb_authtoken?(facebook_params[:facebook_token], facebook_params[:email])

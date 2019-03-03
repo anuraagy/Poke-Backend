@@ -15,6 +15,13 @@ Rails.application.routes.draw do
         post 'facebook',      to: "facebook",      on: :collection
         post 'google',        to: "google",        on: :collection
 
+        get  "friends",                   to: "friends",                   on: :member
+        get  "friend_requests_sent",      to: "friend_requests_sent",      on: :member
+        get  "friend_requests_received",  to: "friend_requests_received",  on: :member
+        post "send_friend_request",       to: "send_friend_request",     on: :member
+        post "accept_friend_request",     to: "accept_friend_request",     on: :member
+        post "decline_friend_request",    to: "decline_friend_request",     on: :member
+
         get  '/:email',       action: 'show', on: :collection, :constraints  => { :email => /[0-z\.]+/ }
         get  '/profile_by_id/:id', action: 'show_id',   on: :collection
         get  '/:email/profile_picture', action: 'profile_picture',
