@@ -25,6 +25,8 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.2]
       t.string :google_token
       t.string :profile_picture
 
+      t.string :device_token
+
       ## Trackable
       # t.integer  :sign_in_count, default: 0, null: false
       # t.datetime :current_sign_in_at
