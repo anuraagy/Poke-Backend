@@ -582,3 +582,24 @@ Google login
                           ]
                       }
                   }`
+
+# Push notifications
+If a user creates a reminder with push=true, the backend will verify that the user has
+an APNs device_token specified. If not, an error will be sent back during reminder creation.
+
+When the reminder triggers, a push notification is sent via Apple with the following alert:
+'Don't forget! {reminder title}'
+
+and the reminder in the payload. E.g.:
+```
+{
+    "id:" 1,
+    "title": "Wake up",
+    "public": true,
+    "push": true,
+    "status": "triggered"
+    "creator_id": 1,
+    "caller_id": null,
+    "will_trigger_at": "2018-10-12T00:00:00Z",
+}
+```
