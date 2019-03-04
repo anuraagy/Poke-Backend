@@ -109,7 +109,7 @@ class Api::V1::RemindersController < Api::V1::BaseController
     if reminder.present? && (reminder.creator == current_user || reminder.caller == current_user)
       if reminder.proxy_session_sid.present?
         TwilioHelper::close_proxy_session(proxy_session_sid)
-        reminder.update(:proxy_session_sid, nil)
+        reminder.update(proxy_session_sid: nil)
       end
       render status: :ok, json: { success: true }
     else
