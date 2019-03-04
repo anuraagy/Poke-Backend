@@ -10,11 +10,18 @@ class Reminder < ApplicationRecord
   validates_inclusion_of :push  , in: [true, false]
 
   validate :valid_trigger_time?
+  validate :valid_push_user?
 
   def send_reminder!
     # send the reminder
-    if self.push
+    if self.push && creator.device_token.present?
       # send push notification
+      n = Rpush::Apns::Notification.new
+      n.app = Rpush::Apns::App.find_by_name("poke_ios")
+      n.device_token = creator.device_token
+      n.alert = "Don't forget! #{self.title}"
+      n.data = self.as_json
+      n.save!
       return
     end
     reminding_user = User.in_reminder_lobby(creator).first
@@ -41,6 +48,12 @@ class Reminder < ApplicationRecord
     #if will_trigger_at.present? && will_trigger_at < Time.now + 5.minutes
     #  errors.add(:will_trigger_at, "Has to be at least 5 minutes in the future")
     #end
+  end
+
+  def valid_push_user?
+    if push && !creator.device_token.present?
+      errors.add(:push, "User does not have push notifications on")
+    end
   end
 
   def triggered?
