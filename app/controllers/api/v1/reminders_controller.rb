@@ -81,39 +81,37 @@ class Api::V1::RemindersController < Api::V1::BaseController
   end
 
   def rating
-    params.require(:id, :rating)
+    params.require([:id, :rating])
     reminder = Reminder.find(params[:id])
-    if reminder.present? && (reminder.creator == current_user || reminder.caller == current_user)
-              && params[:rating].is_a?(Integer)
+    rating = params[:rating].to_i
+    if rating < 1 || rating > 5
+      render status: :bad_request, json: { errors: ['rating should be between 1 and 5'] }
+      return
+    end
+    if reminder.present?
       if reminder.creator == current_user
-        reminder.caller_rating = params[:rating]
+        reminder.update(caller_rating: params[:rating])
       elsif reminder.caller == current_user
-        reminder.creator_rating = params[:rating]
+        reminder.update(creator_rating: params[:rating])
+      else
+        render status: :unauthorized, json: { errors: ['You do not have access to this reminder'] }
+        return
       end
-      render status: :ok json: { success: true }
+      render status: :ok, json: { success: true }
     else
-      render status: :bad_request,
-        json: { errors: ['Reminder does not exist or you do not have access'] }
+      render status: :bad_request, json: { errors: ['Reminder does not exist'] }
     end
   end
 
   def complete
-    p = params.require(:id).permit(:rating)
-    reminder = Reminder.find(p[:id])
+    params.require(:id)
+    reminder = Reminder.find(params[:id])
     if reminder.present? && (reminder.creator == current_user || reminder.caller == current_user)
       if reminder.proxy_session_sid.present?
         TwilioHelper::close_proxy_session(proxy_session_sid)
         reminder.update(:proxy_session_sid, nil)
       end
-
-      if p.key?(:rating) && p[:rating].is_a?(Integer)
-        if reminder.creator == current_user
-          reminder.caller_rating = p[:rating]
-        elsif reminder.caller == current_user
-          reminder.creator_rating = p[:rating]
-        end
-      end
-      render status: :ok json: { success: true }
+      render status: :ok, json: { success: true }
     else
       render status: :bad_request,
         json: { errors: ['Reminder does not exist or you do not have access'] }

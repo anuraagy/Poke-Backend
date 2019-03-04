@@ -36,8 +36,12 @@ ActiveRecord::Schema.define(version: 2019_03_04_174001) do
     t.string "status", default: "new", null: false
     t.string "type"
     t.boolean "public", default: true, null: false
+    t.boolean "push", default: false, null: false
+    t.string "proxy_session_sid"
     t.bigint "creator_id", null: false
     t.bigint "caller_id"
+    t.integer "caller_rating"
+    t.integer "creator_rating"
     t.datetime "will_trigger_at", null: false
     t.datetime "triggered_at"
     t.integer "job_id"
@@ -123,11 +127,11 @@ ActiveRecord::Schema.define(version: 2019_03_04_174001) do
     t.string "bio"
     t.string "active", default: "t", null: false
     t.string "phone_number"
-    t.decimal "rating", default: "0.0", null: false
     t.boolean "ready_to_remind", default: false
     t.string "facebook_token"
     t.string "google_token"
     t.string "profile_picture"
+    t.string "device_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
