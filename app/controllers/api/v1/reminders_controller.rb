@@ -1,4 +1,5 @@
 class Api::V1::RemindersController < Api::V1::BaseController
+  include TwilioHelper
   before_action :authenticate_request!
 
   def index
@@ -80,7 +81,26 @@ class Api::V1::RemindersController < Api::V1::BaseController
   end
 
   def complete
+    p = params.require(:id).permit(:rating)
+    reminder = Reminder.find(p[:id])
+    if reminder.present? && (reminder.creator == current_user || reminder.caller == current_user)
+      if reminder.proxy_session_sid.present?
+        TwilioHelper::close_proxy_session(proxy_session_sid)
+        reminder.update(:proxy_session_sid, nil)
+      end
 
+      if p.key?(:rating) && p[:rating].is_a?(Integer)
+        if reminder.creator == current_user
+          reminder.caller_rating = p[:rating]
+        elsif reminder.caller == current_user
+          reminder.creator_rating = p[:rating]
+        end
+      end
+      render status: :ok json: { success: true }
+    else
+      render status: :bad_request,
+        json: { errors: ['Reminder does not exist or you do not have access'] }
+    end
   end
 
   private

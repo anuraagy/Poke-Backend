@@ -19,7 +19,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.2]
       t.string  :bio
       t.string  :active, null: false, default: true
       t.string  :phone_number
-      t.decimal :rating, null: false, default: 0
       t.boolean :ready_to_remind, default: false
       t.string :facebook_token
       t.string :google_token

@@ -3,9 +3,20 @@ class User < ApplicationRecord
 
   validates :name,      presence: true
   validates :active,    presence: true
-  validates :rating,    presence: true, numericality: { greater_than_or_equal_to: 0 , less_than_or_equal_to: 5 }
 
   scope :in_reminder_lobby, ->(user) { where(ready_to_remind: true).where.not(id: user.id).order(updated_at: :desc) }
+
+  def rating
+      (Reminder.where(creator: self).where.not(creator_rating: nil).sum(:creator_rating)
+      +
+      Reminder.where(caller: self).where.not(caller_rating: nil).sum(:caller_rating)
+      )
+      / (
+      Reminder.where(creator: self).where.not(creator_rating: nil).count
+      +
+      Reminder.where(caller: self).where.not(caller_rating: nil).count
+      )
+  end
 
   def self.login_or_create_from_facebook(facebook_params)
     return unless valid_fb_authtoken?(facebook_params[:facebook_token], facebook_params[:email])
