@@ -603,3 +603,20 @@ and the reminder in the payload. E.g.:
     "will_trigger_at": "2018-10-12T00:00:00Z",
 }
 ```
+
+# Call masking and rating
+To enable call masking, MASKING_ENABLED should be set as an environment variable on the server.
+It can be set to anything, but 'true' would be a good choice. Then, when a reminder is triggered,
+the server will interface with Twilio to create a proxy session and add the creator and caller
+to the proxy session as participants. The number returned to the caller will then be a masked
+number returned by Twilio. When the caller calls this number, they will be routed to the reminder
+creator. By default, the Twilio proxy session expires three minutes after its creation.
+
+The same is done for text reminders.
+
+When the call is complete, the /reminder/:id/complete endpoint should be requested by the caller.
+Additionally, a rating parameter can be passed with an integer value between 1 and 5. The complete
+endpoint should not be used for text reminders, only calls.
+
+A rating can be assigned later via the /reminder/:id/rating endpoint, with the same rating parameter
+as the complete endpoint. Both the creator and the caller may rate the other user.
