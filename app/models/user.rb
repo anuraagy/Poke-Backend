@@ -6,18 +6,6 @@ class User < ApplicationRecord
 
   scope :in_reminder_lobby, ->(user) { where(ready_to_remind: true).where.not(id: user.id).order(updated_at: :desc) }
 
-  def rating
-      (Reminder.where(creator: self).where.not(creator_rating: nil).sum(:creator_rating)
-      +
-      Reminder.where(caller: self).where.not(caller_rating: nil).sum(:caller_rating)
-      )
-      / (
-      Reminder.where(creator: self).where.not(creator_rating: nil).count
-      +
-      Reminder.where(caller: self).where.not(caller_rating: nil).count
-      )
-  end
-
   def self.login_or_create_from_facebook(facebook_params)
     return unless valid_fb_authtoken?(facebook_params[:facebook_token], facebook_params[:email])
 
