@@ -22,6 +22,8 @@ http://167.99.154.236:3005/api/v1/
    `name=[string]`
    `email=[string]`
    `password=[string]`
+   **Optional:**
+   `device_token[string] (APNs)`
 
 * **Success Response:**
 
@@ -60,6 +62,7 @@ http://167.99.154.236:3005/api/v1/
    `name=[string]`
    `bio=[string]`
    `phone_number=[string]`
+   `device_token[string] (APNs)`
 
 * **Success Response:**
 
