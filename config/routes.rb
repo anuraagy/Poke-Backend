@@ -22,8 +22,10 @@ Rails.application.routes.draw do
       end
 
       resources :reminders, only: [:index, :show, :create, :update, :destroy] do
-        post 'start', to: "start", on: :collection
-        post 'end',   to: "end",   on: :collection
+        post 'start',    to: "start",    on: :collection
+        post 'end',      to: "end",      on: :collection
+        post 'rating',   to: 'rating',   on: :member
+        post 'complete', to: 'complete', on: :member
       end
     end
   end

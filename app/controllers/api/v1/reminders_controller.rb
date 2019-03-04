@@ -80,6 +80,23 @@ class Api::V1::RemindersController < Api::V1::BaseController
 
   end
 
+  def rating
+    params.require(:id, :rating)
+    reminder = Reminder.find(params[:id])
+    if reminder.present? && (reminder.creator == current_user || reminder.caller == current_user)
+              && params[:rating].is_a?(Integer)
+      if reminder.creator == current_user
+        reminder.caller_rating = params[:rating]
+      elsif reminder.caller == current_user
+        reminder.creator_rating = params[:rating]
+      end
+      render status: :ok json: { success: true }
+    else
+      render status: :bad_request,
+        json: { errors: ['Reminder does not exist or you do not have access'] }
+    end
+  end
+
   def complete
     p = params.require(:id).permit(:rating)
     reminder = Reminder.find(p[:id])
