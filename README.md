@@ -584,6 +584,7 @@ Google login
                   }`
 
 ### Call masking
+----
 To enable call masking, MASKING_ENABLED should be set as an environment variable on the server.
 It can be set to anything, but 'true' would be a good choice. Then, when a reminder is triggered,
 the server will interface with Twilio to create a proxy session and add the creator and caller
@@ -664,6 +665,9 @@ and the reminder in the payload. E.g.:
 * **Method:**
   `POST`
   
+  * **Headers**: <br />
+  `Authorization: Bearer <auth_token>`
+
 *  **URL Params**
 
    **Required:**
