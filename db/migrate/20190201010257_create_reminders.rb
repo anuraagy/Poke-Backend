@@ -8,6 +8,8 @@ class CreateReminders < ActiveRecord::Migration[5.2]
       t.boolean :public,      null: false, default: true
       t.boolean :push,        null: false, default: false
 
+      t.boolean :did_proxy_interact, null: false, default: false
+
       t.string  :proxy_session_sid
 
       t.references :creator, null: false

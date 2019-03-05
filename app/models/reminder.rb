@@ -32,6 +32,11 @@ class Reminder < ApplicationRecord
         TwilioHelper::add_participant(session.sid, creator)
         participant = TwilioHelper::add_participant(session.sid, reminding_user)
         masked_numer = participant.proxy_identifier
+        Delayed::Job.enqueue(
+          ReminderBackupJob.new(reminder.id),
+          0,
+          Time.now + 3.minutes + 30.seconds
+        )
       end
       # return calling info to reminder user through actioncable
       msg = {}
@@ -48,6 +53,12 @@ class Reminder < ApplicationRecord
     elsif creator.device_token.present?
       # no one in queue, send a push notification if we can.
       push_notification("Sorry, no one was around to remind you! #{self.title}")
+    end
+  end
+
+  def send_backup_reminder
+    if !self.did_proxy_interact
+      push_notification("Sorry, no one was around to remind you! #{self.title}") 
     end
   end
 
