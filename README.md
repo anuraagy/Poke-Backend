@@ -583,7 +583,20 @@ Google login
                       }
                   }`
 
-# Push notifications
+### Call masking
+To enable call masking, MASKING_ENABLED should be set as an environment variable on the server.
+It can be set to anything, but 'true' would be a good choice. Then, when a reminder is triggered,
+the server will interface with Twilio to create a proxy session and add the creator and caller
+to the proxy session as participants. The number returned to the caller will then be a masked
+number returned by Twilio. When the caller calls this number, they will be routed to the reminder
+creator. By default, the Twilio proxy session expires three minutes after its creation. It will
+also be closed after the call is ended. Additionally, if no interactions are made on the proxy
+before the session expires (if the reminding user does not follow through), a push notification
+will be sent to the creator.
+
+The same is done for text reminders.
+
+## Push notifications
 If a user creates a reminder with push=true, the backend will verify that the user has
 an APNs device_token specified. If not, an error will be sent back during reminder creation.
 
@@ -604,19 +617,7 @@ and the reminder in the payload. E.g.:
 }
 ```
 
-#### Call masking
-To enable call masking, MASKING_ENABLED should be set as an environment variable on the server.
-It can be set to anything, but 'true' would be a good choice. Then, when a reminder is triggered,
-the server will interface with Twilio to create a proxy session and add the creator and caller
-to the proxy session as participants. The number returned to the caller will then be a masked
-number returned by Twilio. When the caller calls this number, they will be routed to the reminder
-creator. By default, the Twilio proxy session expires three minutes after its creation. It will
-also be closed after the call is ended. Additionally, if no interactions are made on the proxy
-before the session expires (if the reminding user does not follow through), a push notification
-will be sent to the creator.
-
-The same is done for text reminders.
-
+## Ratings
 ### Get unrated reminders
 ----
   Get triggered reminders where the current user is a party and has not yet rated the interaction
