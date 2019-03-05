@@ -103,19 +103,11 @@ class Api::V1::RemindersController < Api::V1::BaseController
     end
   end
 
-  def complete
-    params.require(:id)
-    reminder = Reminder.find(params[:id])
-    if reminder.present? && (reminder.creator == current_user || reminder.caller == current_user)
-      if reminder.proxy_session_sid.present?
-        TwilioHelper::close_proxy_session(proxy_session_sid)
-        reminder.update(proxy_session_sid: nil)
-      end
-      render status: :ok, json: { success: true }
-    else
-      render status: :bad_request,
-        json: { errors: ['Reminder does not exist or you do not have access'] }
-    end
+  def unrated
+    reminders = Reminder.where(caller: current_user).where(creator_rating: nil)
+      .or(Reminder.where(creator: current_user).where(caller_rating: nil))
+      .where(status: 'triggered')
+    render status: :ok, json: reminders
   end
 
   private
