@@ -1,8 +1,9 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
 
-  validates :name,      presence: true
-  validates :active,    presence: true
+  validates :name,         presence: true
+  validates :active,       presence: true
+  validates :phone_number, length: { minimum: 10 }
 
   scope :in_reminder_lobby, ->(user) { where(ready_to_remind: true).where.not(id: user.id).order(updated_at: :desc) }
 
