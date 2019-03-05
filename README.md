@@ -621,41 +621,39 @@ endpoint should not be used for text reminders, only calls.
 A rating can be assigned later via the /reminder/:id/rating endpoint, with the same rating parameter
 as the complete endpoint. Both the creator and the caller may rate the other user.
 
-### Call complete endpoint
+### Get unrated reminders
 ----
-  Should be requested by caller after a call finishes.
+  Get triggered reminders where the current user is a party and has not yet rated the interaction
 
-* **URL**
+* **URL:** <br />
+  /reminders/unrated
 
-  /reminders/:id/complete
+* **Method:** <br />
+  `GET`
 
-* **Method:**
-  `POST`
-  
-*  **URL Params**
+* **Headers**: <br />
+  `Authorization: Bearer <auth_token>`
 
-   **Required:**
-   `id=[integer]`
-   
+*  **URL Params**: <br />
+  none
 
 * **Success Response:**
-
   * **Code:** 200 <br />
-    **Content:** `{ "success": true }`
-  
+    **Content:** ```[{
+                      "id:" 1,
+                      "title": "New",
+                      "public": true,
+                      "status": "New"
+                      "creator_id": 1,
+                      "caller_id": 2,
+                      "will_trigger_at": "2018-10-12T00:00:00Z",
+                    }, ... ] ```
+ 
 * **Error Response:**
-
-  * **Code:** 400 <br />
-    **Content:** `{
-                    "errors": {
-                      [
-                        "Reminder does not exist or you do not have access",
-                        "...",
-                        ..
-                      ]
-                    }
-                  }`
-
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ ... ]"
+                    }```
 
 ### Rating endpoint
 ----
