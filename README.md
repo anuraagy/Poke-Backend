@@ -604,22 +604,18 @@ and the reminder in the payload. E.g.:
 }
 ```
 
-# Call masking and rating
+#### Call masking
 To enable call masking, MASKING_ENABLED should be set as an environment variable on the server.
 It can be set to anything, but 'true' would be a good choice. Then, when a reminder is triggered,
 the server will interface with Twilio to create a proxy session and add the creator and caller
 to the proxy session as participants. The number returned to the caller will then be a masked
 number returned by Twilio. When the caller calls this number, they will be routed to the reminder
-creator. By default, the Twilio proxy session expires three minutes after its creation.
+creator. By default, the Twilio proxy session expires three minutes after its creation. It will
+also be closed after the call is ended. Additionally, if no interactions are made on the proxy
+before the session expires (if the reminding user does not follow through), a push notification
+will be sent to the creator.
 
 The same is done for text reminders.
-
-When the call is complete, the /reminders/:id/complete endpoint should be requested by the caller.
-Additionally, a rating parameter can be passed with an integer value between 1 and 5. The complete
-endpoint should not be used for text reminders, only calls.
-
-A rating can be assigned later via the /reminder/:id/rating endpoint, with the same rating parameter
-as the complete endpoint. Both the creator and the caller may rate the other user.
 
 ### Get unrated reminders
 ----
@@ -662,7 +658,7 @@ as the complete endpoint. Both the creator and the caller may rate the other use
 
 * **URL**
 
-  /reminders/:id/rating
+  /reminders/rating
 
 * **Method:**
   `POST`
@@ -670,8 +666,9 @@ as the complete endpoint. Both the creator and the caller may rate the other use
 *  **URL Params**
 
    **Required:**
-   `id=[integer]`
-   `rating=[integer 1 to 5]`
+   `ids=[integer []]`
+   `ratings=[integer[], 1 to 5]`
+   rating for id[i] is at rating[i]
    
 
 * **Success Response:**
