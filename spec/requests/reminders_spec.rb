@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe 'Reminders API' do
+  include ActiveJob::TestHelper
+  
   before :each do 
     user_params = {
       name: "Test",

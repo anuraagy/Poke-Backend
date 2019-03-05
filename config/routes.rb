@@ -15,6 +15,8 @@ Rails.application.routes.draw do
         post 'facebook',      to: "facebook",      on: :collection
         post 'google',        to: "google",        on: :collection
 
+        post 'report', to: "report", on: :collection
+
         get  "friends",                   to: "friends",                   on: :member
         get  "friend_requests_sent",      to: "friend_requests_sent",      on: :member
         get  "friend_requests_received",  to: "friend_requests_received",  on: :member

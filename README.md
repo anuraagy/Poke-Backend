@@ -253,6 +253,45 @@ Google login
                       "errors": "This is an invalid authtoken!"
                   }`
 
+### Report a user
+----
+
+Google login
+
+* **URL**
+
+  /users/report
+
+* **Method:**
+
+  `POST`
+
+* **Headers**: <br />
+  `Authorization: Bearer <auth_token>`
+
+*  **URL Params**
+
+   **Required:**
+
+   `reporter_id=[integer]`
+   `reportee_id=[integer]`
+   `reason=[string]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                      "success": true
+                  }`
+
+* **Error Response:**
+
+
+  * **Code:** 401 <br />
+    **Content:** `{
+                      "succes": false,
+                      "errors": "This is an invalid authtoken!"
+                  }`
 
 
 ### Get current user profile

@@ -180,6 +180,7 @@ describe 'Users API' do
       end
     end
   end
+  
   describe 'Current user profile' do
     describe 'Valid' do
       before :each do 
@@ -230,6 +231,135 @@ describe 'Users API' do
       it 'user not authenticated' do
         get '/api/v1/users'
         expect(response).to have_http_status :unauthorized
+      end
+    end
+  end
+
+  describe "User update" do
+    describe "Invalid" do
+      before :each do 
+        user_params = {
+          name: "Test",
+          email: "test@test.com", 
+          password: "password"
+        }
+        @user = User.create!(user_params)
+
+        http_login(@user)
+      end
+
+      it "bad id is sent in request" do
+        put '/api/v1/users/-1',
+          params: {
+            name: "Blank"
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    describe "Valid" do
+      before :each do 
+        user_params = {
+          name: "Test",
+          email: "test@test.com", 
+          password: "password"
+        }
+        @user = User.create!(user_params)
+
+        http_login(@user)
+      end
+
+      it "change name to blank" do
+        put "/api/v1/users/#{@user.id}",
+          params: {
+            name: "Blank"
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
+  describe "User report" do
+    before :each do 
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+      @reporter = User.create!(user_params)
+
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+      @reportee = User.create!(user_params)
+
+      http_login(@reporter)
+    end
+
+    describe "Invalid" do 
+      it "no reporter sent" do
+        post "/api/v1/users/report",
+          params: {
+            reportee_id: @reportee.id,
+            reason: "They were bad"
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "no reportee sent" do
+        post "/api/v1/users/report",
+          params: {
+            reporter_id: @reporter.id,
+            reason: "They were bad"
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "no reason sent" do
+        post "/api/v1/users/report",
+          params: {
+            reporter_id: @reporter.id,
+            reportee_id: @reportee.id,
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "reporter isn't current user" do
+        post "/api/v1/users/report",
+          params: {
+            reporter_id: @reportee.id,
+            reportee_id: @reporter.id,
+            reason: "They were bad"
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    describe "Valid" do
+      it "creates a valid report" do
+        post "/api/v1/users/report",
+          params: {
+            reporter_id: @reporter.id,
+            reportee_id: @reportee.id,
+            reason: "They were bad"
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
       end
     end
   end

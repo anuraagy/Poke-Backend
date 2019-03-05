@@ -1,6 +1,6 @@
 class Api::V1::UsersController < Api::V1::BaseController
   before_action :authenticate_request!,
-    only: [:index, :show, :update, :change_password, :profile_picture]
+    except: [:authenticate, :register, :facebook, :google]
 
   def index
     # current user profile
@@ -131,6 +131,21 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
   end
 
+  def report
+    user = User.find_by(id: params[:reporter_id])
+    report = Report.new(report_params)
+
+    if user.blank?
+      render status: :unauthorized, json: { errors: ["There is no user with that id"] }
+    elsif user != current_user
+      render status: :forbidden, json: { errors: ["You do not have access to this user"] }
+    elsif report.save
+      render status: :ok, json: { success: true }
+    else
+      render status: :unauthorized, json: { success: false, errors: report.errors.full_messages }
+    end
+  end
+
   def profile_picture
     # other user's profile
     user = User.find_by(email: user_params[:email])
@@ -258,5 +273,9 @@ class Api::V1::UsersController < Api::V1::BaseController
       :phone_number,
       :profile_picture
     )
+  end
+
+  def report_params
+    params.permit(:reportee_id, :reporter_id, :reason)
   end
 end

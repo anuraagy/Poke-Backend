@@ -10,6 +10,9 @@ class User < ApplicationRecord
   has_many :friendships
   has_many :friends, through: :friendships
 
+  has_many :reports_created,  foreign_key: "reporter_id", class_name: "Report"
+  has_many :reports_assigned, foreign_key: "reportee_id", class_name: "Report"
+
   validates :name,      presence: true
   validates :active,    presence: true
   validates :rating,    presence: true, numericality: { greater_than_or_equal_to: 0 , less_than_or_equal_to: 5 }
