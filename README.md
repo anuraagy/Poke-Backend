@@ -614,9 +614,82 @@ creator. By default, the Twilio proxy session expires three minutes after its cr
 
 The same is done for text reminders.
 
-When the call is complete, the /reminder/:id/complete endpoint should be requested by the caller.
+When the call is complete, the /reminders/:id/complete endpoint should be requested by the caller.
 Additionally, a rating parameter can be passed with an integer value between 1 and 5. The complete
 endpoint should not be used for text reminders, only calls.
 
 A rating can be assigned later via the /reminder/:id/rating endpoint, with the same rating parameter
 as the complete endpoint. Both the creator and the caller may rate the other user.
+
+### Call complete endpoint
+----
+  Should be requested by caller after a call finishes.
+
+* **URL**
+
+  /reminders/:id/complete
+
+* **Method:**
+  `POST`
+  
+*  **URL Params**
+
+   **Required:**
+   `id=[integer]`
+   
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{ "success": true }`
+  
+* **Error Response:**
+
+  * **Code:** 400 <br />
+    **Content:** `{
+                    "errors": {
+                      [
+                        "Reminder does not exist or you do not have access",
+                        "...",
+                        ..
+                      ]
+                    }
+                  }`
+
+
+### Rating endpoint
+----
+  Assign a rating to a reminder that the user is a part of. If the user was creator, then set
+  the caller's rating, and if the user was the caller, set the creator rating.
+
+* **URL**
+
+  /reminders/:id/rating
+
+* **Method:**
+  `POST`
+  
+*  **URL Params**
+
+   **Required:**
+   `id=[integer]`
+   `rating=[integer 1 to 5]`
+   
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{ "success": true }`
+  
+* **Error Response:**
+
+  * **Code:** 400 <br />
+    **Content:** `{
+                    "errors": {
+                      [
+                        "Reminder does not exist or you do not have access",
+                        "...",
+                        ..
+                      ]
+                    }
+                  }`
