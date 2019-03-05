@@ -171,6 +171,8 @@ class Api::V1::UsersController < Api::V1::BaseController
 
     if user.blank?
       render status: :unauthorized, json: { errors: ["There is no user with that id"] }
+    elsif user != current_user
+      render status: :forbidden, json: { errors: ["You do not have access to this user"] }
     else
       render status: :ok, json: { friends: user.friend_requests_sent.where.not(status: "accepted").as_json }
     end
@@ -181,6 +183,8 @@ class Api::V1::UsersController < Api::V1::BaseController
 
     if user.blank?
       render status: :unauthorized, json: { errors: ["There is no user with that id"] }
+    elsif user != current_user
+      render status: :forbidden, json: { errors: ["You do not have access to this user"] }
     else
       render status: :ok, json: { friends: user.friend_requests_received.where.not(status: "accepted").as_json }
     end
@@ -240,6 +244,15 @@ class Api::V1::UsersController < Api::V1::BaseController
     else
       user.decline_friend_request (friend_request)
       render status: :ok, json: { success: true }
+    end
+  end
+
+  def search
+    if params[:query].present?
+      results = User.search_users(params[:query])
+      render status: :ok, json: { results: results.as_json }
+    else
+      render status: :bad_request, json: { errors: ["No query sent"] }
     end
   end
 

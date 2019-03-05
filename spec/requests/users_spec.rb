@@ -533,11 +533,113 @@ describe 'Users API' do
     end
   end
 
-  describe "User view friend requests" do 
+  describe "User views friend requests" do 
+    before :each do 
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+      @sender = User.create!(user_params)
+
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+      @receiver = User.create!(user_params)
+
+      http_login(@sender)
+      send_friend_request(@sender, @receiver, auth_headers)
+      http_login(@receiver)
+    end
+
+    describe "Invalid" do
+      it "user id is bad" do
+        get "/api/v1/users/-1/friend_requests_received/",
+          params: {
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "user is different than current user" do
+        get "/api/v1/users/#{@sender.id}/friend_requests_received/",
+          params: {},
+          headers: auth_headers
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    describe "Valid" do
+      it "views friend requests" do
+        get "/api/v1/users/#{@receiver.id}/friend_requests_received/",
+          params: {},
+          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
 
   end
 
-  describe "User seaches for friends" do 
+  describe "User seaches for other users" do 
+    before :each do 
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+      @sender = User.create!(user_params)
+
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+      @user2 = User.create!(user_params)
+
+      user_params = {
+        name: "Test1",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+
+      @user3 = User.create!(user_params)
+
+      user_params = {
+        name: "Test2",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+      @user4 = User.create!(user_params)
+
+      http_login(@sender)
+    end
+
+    describe "Invalid" do
+      it "no query sent" do
+        get "/api/v1/users/search",
+          params: {},
+          headers: auth_headers
+
+        expect(response).to have_http_status(:bad_request)
+      end
+    end
+
+    describe "Valid" do
+      it "search for users with the name Test" do
+        get "/api/v1/users/search",
+          params: {
+            query: "Test"
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
 
   end
 
@@ -548,7 +650,6 @@ describe 'Users API' do
   describe "User hides profile activity" do
 
   end
-
 
 
   describe 'Other user profile' do
