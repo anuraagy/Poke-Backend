@@ -29,13 +29,13 @@ class User < ApplicationRecord
   end
 
   def hide_profile_activity
-    return if activity_hidden
-    update!(activity_hidden: true)
+    return false if activity_hidden
+    update(activity_hidden: true)
   end
 
   def show_profile_activity
-    return unless activity_hidden
-    update!(activity_hidden: false)
+    return false unless activity_hidden
+    update(activity_hidden: false)
   end
 
   def friend_activity

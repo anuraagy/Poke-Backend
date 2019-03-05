@@ -648,7 +648,65 @@ describe 'Users API' do
   end
 
   describe "User hides profile activity" do
+    describe "Invalid" do
+      before :each do 
+        user_params = {
+          name: "Test",
+          email: "test@test.com", 
+          password: "password"
+        }
+        @user = User.create!(user_params)
 
+        user_params = {
+          name: "Test",
+          email: "test@test2.com", 
+          password: "password"
+        }
+
+        @user2 = User.create!(user_params)
+
+
+        http_login(@user)
+      end
+
+      it "bad id is sent in request" do
+        post '/api/v1/users/-1/hide_profile_activity/',
+          params: {},
+          headers: auth_headers
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "bad id is sent in request" do
+        post "/api/v1/users/#{@user2.id}/hide_profile_activity/",
+          params: {},
+          headers: auth_headers
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    describe "Valid" do
+      before :each do 
+        user_params = {
+          name: "Test",
+          email: "test@test.com", 
+          password: "password"
+        }
+        @user = User.create!(user_params)
+
+        http_login(@user)
+      end
+
+      it "hide profile activity" do
+        post "/api/v1/users/#{@user.id}/hide_profile_activity/",
+          params: {},
+          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(User.find(@user.id).activity_hidden).to eq(true)
+      end
+    end
   end
 
 
