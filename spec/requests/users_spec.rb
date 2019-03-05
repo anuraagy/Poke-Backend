@@ -364,6 +364,193 @@ describe 'Users API' do
     end
   end
 
+  describe "User sends a friend request" do
+    before :each do 
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+      @sender = User.create!(user_params)
+
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+      @receiver = User.create!(user_params)
+
+      http_login(@sender)
+    end
+
+    describe "Invalid" do
+      it "no friend in body" do
+        post "/api/v1/users/#{@sender.id}/send_friend_request/",
+          params: {
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it "sender is different than current user" do
+        post "/api/v1/users/#{@receiver.id}/send_friend_request/",
+          params: {
+            friend_id: @sender.id,
+            reason: "They were bad"
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    describe "Valid" do
+      it "sends a friend request" do
+        post "/api/v1/users/#{@sender.id}/send_friend_request/",
+          params: {
+            friend_id: @receiver.id,
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(@sender.friend_requests_sent).not_to be_empty
+      end
+    end
+  end
+
+  describe "User accepts a friend request" do 
+    before :each do 
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+      @sender = User.create!(user_params)
+
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+      @receiver = User.create!(user_params)
+
+      http_login(@sender)
+      send_friend_request(@sender, @receiver, auth_headers)
+      http_login(@receiver)
+    end
+
+    describe "Invalid" do
+      it "no friend in body" do
+        post "/api/v1/users/#{@receiver.id}/accept_friend_request/",
+          params: {
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it "receiver is different than current user" do
+        post "/api/v1/users/#{@sender.id}/accept_friend_request/",
+          params: {
+            friend_request: @sender.friend_requests_sent.last.id,
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    describe "Valid" do
+      it "accepts a friend request" do
+        post "/api/v1/users/#{@receiver.id}/accept_friend_request/",
+          params: {
+            friend_request: @sender.friend_requests_sent.last.id,
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(@sender.friends).to include(@receiver)
+        expect(@receiver.friends).to include(@sender)
+      end
+    end
+  end
+
+  describe "User declines a friend request" do 
+    before :each do 
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+      @sender = User.create!(user_params)
+
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+      @receiver = User.create!(user_params)
+
+      http_login(@sender)
+      send_friend_request(@sender, @receiver, auth_headers)
+      http_login(@receiver)
+    end
+
+    describe "Invalid" do
+      it "no friend in body" do
+        post "/api/v1/users/#{@receiver.id}/decline_friend_request/",
+          params: {
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it "receiver is different than current user" do
+        post "/api/v1/users/#{@sender.id}/decline_friend_request/",
+          params: {
+            friend_request: @sender.friend_requests_sent.last.id,
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    describe "Valid" do
+      it "accepts a friend request" do
+        post "/api/v1/users/#{@receiver.id}/decline_friend_request/",
+          params: {
+            friend_request: @sender.friend_requests_sent.last.id,
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(@sender.friends).not_to include(@receiver)
+        expect(@receiver.friends).not_to include(@sender)
+      end
+    end
+  end
+
+  describe "User view friend requests" do 
+
+  end
+
+  describe "User seaches for friends" do 
+
+  end
+
+  describe "User views friend activity" do 
+
+  end
+
+  describe "User hides profile activity" do
+
+  end
+
+
+
   describe 'Other user profile' do
     describe 'Valid' do
       before :each do 

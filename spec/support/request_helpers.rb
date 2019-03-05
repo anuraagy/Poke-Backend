@@ -23,4 +23,14 @@ module Request
       @user
     end
   end
+
+  module SocialHelper
+    def send_friend_request(sender, receiver, headers)
+      post "/api/v1/users/#{sender.id}/send_friend_request/",
+        params: {
+          friend_id: receiver.id,
+        },
+        headers: headers
+    end
+  end
 end

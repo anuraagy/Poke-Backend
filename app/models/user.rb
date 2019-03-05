@@ -43,6 +43,8 @@ class User < ApplicationRecord
   end
 
   def activity
+    return if activity_hidden
+    
     activity_hash = {}
     activity_hash["reminders_created"] = reminders_created.to_a
     activity_hash["remniders_reminded"] = reminders_reminded.to_a

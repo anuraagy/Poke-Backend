@@ -188,6 +188,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def send_friend_request
     user = User.find_by(id: params[:id])
+    friend = User.find_by(id: params[:friend_id])
 
     if user.blank?
       render status: :unauthorized, json: { errors: ["There is no user with that id"] }
@@ -197,7 +198,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       return
     end
 
-    friend_request = FriendRequest.new(sender: self, receiver: friend)
+    friend_request = FriendRequest.new(sender: current_user, receiver: friend)
 
     if friend_request.save
       render status: :ok, json: { success: true }
@@ -214,6 +215,8 @@ class Api::V1::UsersController < Api::V1::BaseController
       render status: :unauthorized, json: { errors: ["There is no user with that id"] }
     elsif user != current_user
       render status: :forbidden, json: { errors: ["You do not have access to this user"] }
+    elsif friend_request.blank?
+      render status: :bad_request, json: { errors: ["There is no friend request with that id"] }
     elsif user != friend_request.receiver
       render status: :forbidden, json: { errors: ["You do not have access to this friend request"] }
     else
@@ -230,6 +233,8 @@ class Api::V1::UsersController < Api::V1::BaseController
       render status: :unauthorized, json: { errors: ["There is no user with that id"] }
     elsif user != current_user
       render status: :forbidden, json: { errors: ["You do not have access to this user"] }
+    elsif friend_request.blank?
+      render status: :bad_request, json: { errors: ["There is no friend request with that id"] }
     elsif user != friend_request.receiver
       render status: :forbidden, json: { errors: ["You do not have access to this friend request"] }
     else

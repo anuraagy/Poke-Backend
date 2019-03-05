@@ -51,6 +51,7 @@ RSpec.configure do |config|
   # include helpers for request specs
   config.include Request::JSONHelper, type: :request
   config.include Request::AuthenticationHelper, type: :request
+  config.include Request::SocialHelper, type: :request
 
   
 
