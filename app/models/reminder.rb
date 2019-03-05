@@ -58,6 +58,8 @@ class Reminder < ApplicationRecord
 
   def send_backup_reminder
     if !self.did_proxy_interact
+      self.caller = nil
+      self.push = true
       push_notification("Sorry, no one was around to remind you! #{self.title}") 
     end
   end
