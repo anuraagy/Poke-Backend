@@ -22,6 +22,8 @@ http://167.99.154.236:3005/api/v1/
    `name=[string]`
    `email=[string]`
    `password=[string]`
+   **Optional:**
+   `device_token[string] (APNs)`
 
 * **Success Response:**
 
@@ -60,6 +62,7 @@ http://167.99.154.236:3005/api/v1/
    `name=[string]`
    `bio=[string]`
    `phone_number=[string]`
+   `device_token[string] (APNs)`
 
 * **Success Response:**
 
@@ -578,4 +581,115 @@ Google login
                             ..
                           ]
                       }
+                  }`
+
+# Push notifications
+If a user creates a reminder with push=true, the backend will verify that the user has
+an APNs device_token specified. If not, an error will be sent back during reminder creation.
+
+When the reminder triggers, a push notification is sent via Apple with the following alert:
+'Don't forget! {reminder title}'
+
+and the reminder in the payload. E.g.:
+```
+{
+    "id:" 1,
+    "title": "Wake up",
+    "public": true,
+    "push": true,
+    "status": "triggered"
+    "creator_id": 1,
+    "caller_id": null,
+    "will_trigger_at": "2018-10-12T00:00:00Z",
+}
+```
+
+# Call masking and rating
+To enable call masking, MASKING_ENABLED should be set as an environment variable on the server.
+It can be set to anything, but 'true' would be a good choice. Then, when a reminder is triggered,
+the server will interface with Twilio to create a proxy session and add the creator and caller
+to the proxy session as participants. The number returned to the caller will then be a masked
+number returned by Twilio. When the caller calls this number, they will be routed to the reminder
+creator. By default, the Twilio proxy session expires three minutes after its creation.
+
+The same is done for text reminders.
+
+When the call is complete, the /reminders/:id/complete endpoint should be requested by the caller.
+Additionally, a rating parameter can be passed with an integer value between 1 and 5. The complete
+endpoint should not be used for text reminders, only calls.
+
+A rating can be assigned later via the /reminder/:id/rating endpoint, with the same rating parameter
+as the complete endpoint. Both the creator and the caller may rate the other user.
+
+### Call complete endpoint
+----
+  Should be requested by caller after a call finishes.
+
+* **URL**
+
+  /reminders/:id/complete
+
+* **Method:**
+  `POST`
+  
+*  **URL Params**
+
+   **Required:**
+   `id=[integer]`
+   
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{ "success": true }`
+  
+* **Error Response:**
+
+  * **Code:** 400 <br />
+    **Content:** `{
+                    "errors": {
+                      [
+                        "Reminder does not exist or you do not have access",
+                        "...",
+                        ..
+                      ]
+                    }
+                  }`
+
+
+### Rating endpoint
+----
+  Assign a rating to a reminder that the user is a part of. If the user was creator, then set
+  the caller's rating, and if the user was the caller, set the creator rating.
+
+* **URL**
+
+  /reminders/:id/rating
+
+* **Method:**
+  `POST`
+  
+*  **URL Params**
+
+   **Required:**
+   `id=[integer]`
+   `rating=[integer 1 to 5]`
+   
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{ "success": true }`
+  
+* **Error Response:**
+
+  * **Code:** 400 <br />
+    **Content:** `{
+                    "errors": {
+                      [
+                        "Reminder does not exist or you do not have access",
+                        "...",
+                        ..
+                      ]
+                    }
                   }`

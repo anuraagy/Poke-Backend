@@ -1,4 +1,5 @@
 class Api::V1::RemindersController < Api::V1::BaseController
+  include TwilioHelper
   before_action :authenticate_request!
 
   def index
@@ -79,13 +80,39 @@ class Api::V1::RemindersController < Api::V1::BaseController
 
   end
 
-  def complete
+  def rating
+    params.require([:id, :rating])
+    reminder = Reminder.find(params[:id])
+    rating = params[:rating].to_i
+    if rating < 1 || rating > 5
+      render status: :bad_request, json: { errors: ['rating should be between 1 and 5'] }
+      return
+    end
+    if reminder.present?
+      if reminder.creator == current_user
+        reminder.update(caller_rating: params[:rating])
+      elsif reminder.caller == current_user
+        reminder.update(creator_rating: params[:rating])
+      else
+        render status: :unauthorized, json: { errors: ['You do not have access to this reminder'] }
+        return
+      end
+      render status: :ok, json: { success: true }
+    else
+      render status: :bad_request, json: { errors: ['Reminder does not exist'] }
+    end
+  end
 
+  def unrated
+    reminders = Reminder.where(caller: current_user).where(creator_rating: nil)
+      .or(Reminder.where(creator: current_user).where(caller_rating: nil))
+      .where(status: 'triggered')
+    render status: :ok, json: reminders
   end
 
   private
 
   def reminder_params
-    params.permit(:title, :description, :status, :public, :creator_id, :caller_id, :will_trigger_at)
+    params.permit(:title, :description, :status, :public, :creator_id, :caller_id, :will_trigger_at, :push)
   end
 end
