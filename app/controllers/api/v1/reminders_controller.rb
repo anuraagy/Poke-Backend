@@ -81,26 +81,30 @@ class Api::V1::RemindersController < Api::V1::BaseController
   end
 
   def rating
-    params.require([:id, :rating])
-    reminder = Reminder.find(params[:id])
-    rating = params[:rating].to_i
-    if rating < 1 || rating > 5
-      render status: :bad_request, json: { errors: ['rating should be between 1 and 5'] }
-      return
+    params.require([:ids, :ratings])
+    ids = params[:ids]
+    ratings = params[:ratings]
+    if !ratings.is_a?(Array) || !ids.is_a?(Array) || ratings.length != ids.length
+      render status: :bad_request, json: { errors: ['ids/ratings should be arrays of same size'] }
     end
-    if reminder.present?
-      if reminder.creator == current_user
-        reminder.update(caller_rating: params[:rating])
-      elsif reminder.caller == current_user
-        reminder.update(creator_rating: params[:rating])
-      else
-        render status: :unauthorized, json: { errors: ['You do not have access to this reminder'] }
+    ratings.each do |rating|
+      if rating.to_i < 0 || rating.to_i > 5
+        render status: :bad_request, json: { errors: ['rating should be between 0 and 5'] }
         return
       end
-      render status: :ok, json: { success: true }
-    else
-      render status: :bad_request, json: { errors: ['Reminder does not exist'] }
     end
+
+    ids.zip(ratings).each do |id, rating|
+      reminder = Reminder.find(id.to_i)
+      if reminder.present?
+        if reminder.creator == current_user
+          reminder.update(caller_rating: rating.to_i)
+        elsif reminder.caller == current_user
+          reminder.update(creator_rating: rating.to_i)
+        end
+      end
+    end
+    render status: :ok, json: { success: true }
   end
 
   def unrated
@@ -110,9 +114,12 @@ class Api::V1::RemindersController < Api::V1::BaseController
     render status: :ok, json: reminders
   end
 
+
   private
 
   def reminder_params
     params.permit(:title, :description, :status, :public, :creator_id, :caller_id, :will_trigger_at, :push)
   end
 end
+
+Reminder.where(creator_id: 1).where(creator_rating: nil).or(Reminder.where(caller_id: 1).where(caller_rating: nil)).where(status: 'triggered')
