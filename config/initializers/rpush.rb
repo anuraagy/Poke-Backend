@@ -30,15 +30,16 @@ Rpush.configure do |config|
   # config.apns.feedback_receiver.frequency = 60
 
 end
-
-# apns_file = File.join(Rails.root, 'APNSCert.pem')
-# app = Rpush::Apns::App.new
-# app.name = 'poke_ios'
-# app.certificate = File.read(apns_file)
-# app.environment = 'sandbox' # APNs environment.
-# app.password = ENV['apns_certificate_password']
-# app.connections = 1
-# app.save!
+if Rpush::Apns::App.find_by_name('poke_ios').nil?
+  apns_file = File.join(Rails.root, 'development.pem')
+  app = Rpush::Apns::App.new
+  app.name = 'poke_ios'
+  app.certificate = File.read(apns_file)
+  app.environment = 'development' # APNs environment.
+  app.password = '' #Rails.application.credentials.apns_cert_pw
+  app.connections = 1
+  app.save!
+end
 
 Rpush.reflect do |on|
 
