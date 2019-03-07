@@ -349,41 +349,371 @@ Google login
                       "errors": "[ ... ]"
                     }```
 
-### Get other user profile
+### Report a user
 ----
-  Gets user profile given email
+  Report a bad user
 
 * **URL**
 
-  /users/:email
+  /users/report
+
+* **Method:**
+
+  `POST`
+  
+*  **URL Params**
+    `reporter_id=[integer]`
+    `reportee_id=[integer]`
+    `reason=[string]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "success": true
+                  }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ "User not found", ... ]"
+                    }```
+
+
+### Send a friend request
+----
+  Send a friend request
+
+* **URL**
+
+  /users/:id/send_friend_request
+
+* **Method:**
+
+  `POST`
+  
+*  **URL Params**
+    `friend_id=[integer]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "success": true
+                  }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ "User not found", ... ]"
+                    }```
+
+### Accept a friend request
+----
+  Accept a friend request
+
+* **URL**
+
+  /users/:id/accept_friend_request
+
+* **Method:**
+
+  `POST`
+  
+*  **URL Params**
+    `friend_request=[integer]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "success": true
+                  }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ "User not found", ... ]"
+                    }```
+
+
+### Decline a friend request
+----
+  Decline a friend requests
+
+* **URL**
+
+  /users/:id/decline_friend_request
+
+* **Method:**
+
+  `POST`
+  
+*  **URL Params**
+    `friend_request=[integer]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "success": true
+                  }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ "User not found", ... ]"
+                    }```
+
+### View a list of friend requests received (pending)
+----
+  View a list of friend requests a user received
+
+* **URL**
+
+  /users/:id/friend_requests_received
 
 * **Method:**
 
   `GET`
   
 *  **URL Params**
-    `email=[string]`
 
 * **Success Response:**
 
   * **Code:** 200 <br />
     **Content:** `{
-                    "profile": {
-                        "user": {
-                            "id": 1,
-                            "email": "a@b.com",
-                            "name": "aj",
-                            "bio": null,
-                            "active": "t",
-                            "rating": "0.0",
-                            "created_at": "2019-02-07T18:36:39.945Z",
-                            "updated_at": "2019-02-07T18:36:39.945Z"
-                        },
-                        "reminder_count": 1,
-                        "active_reminders": 0,
-                        "times_reminded_others": 0,
-                    }
-                }`
+                    "friend_requests": [
+                      { 
+                        "id":1,
+                        "sender_id":2,
+                        "receiver_id":1,
+                        "status":"sent",
+                        "created_at": "2019-03-07T22:01:15.969Z",
+                        "updated_at": "2019-03-07T22:01:15.969Z"
+                      },
+                      { 
+                        "id":2,
+                        "sender_id":2,
+                        "receiver_id":1,
+                        "status":"sent",
+                        "created_at": "2019-03-07T22:01:15.969Z",
+                        "updated_at": "2019-03-07T22:01:15.969Z"
+                      }
+                    ]
+                  }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ "User not found", ... ]"
+                    }```
+
+
+### View a list of friend requests sent
+----
+  View a list of friend requests a user sends
+
+* **URL**
+
+  /users/:id/friend_requests_sent
+
+* **Method:**
+
+  `GET`
+  
+*  **URL Params**
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "friend_requests": [
+                      { 
+                        "id":1,
+                        "sender_id":2,
+                        "receiver_id":1,
+                        "status":"sent",
+                        "created_at": "2019-03-07T22:01:15.969Z",
+                        "updated_at": "2019-03-07T22:01:15.969Z"
+                      },
+                      { 
+                        "id":2,
+                        "sender_id":2,
+                        "receiver_id":1,
+                        "status":"sent",
+                        "created_at": "2019-03-07T22:01:15.969Z",
+                        "updated_at": "2019-03-07T22:01:15.969Z"
+                      }
+                    ]
+                  }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ "User not found", ... ]"
+                    }```
+
+### Search users
+----
+  Search through all users
+
+* **URL**
+
+  /users/search
+
+* **Method:**
+
+  `GET`
+  
+*  **URL Params**
+  query=[string]
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "results": [
+                      {
+                        "id":1,
+                        "email": "test@test.com",
+                        "name":"Test",
+                        "bio":null,
+                        "active":"",
+                        "phone_number":null,
+                        "rating":"0.0",
+                        "ready_to_remind":false,
+                        "facebook_token":null,
+                        "google_token":null,
+                        "profile_picture":null,
+                        "activity_hidden":false,
+                        "created_at":"2019-03-03T03:53:05.460Z",
+                        "updated_at":"2019-03-03T03:53:05.460Z"
+                      },
+                      {
+                        "id":1,
+                        "email": "test@test.com",
+                        "name":"Test",
+                        "bio":null,
+                        "active":"",
+                        "phone_number":null,
+                        "rating":"0.0",
+                        "ready_to_remind":false,
+                        "facebook_token":null,
+                        "google_token":null,
+                        "profile_picture":null,
+                        "activity_hidden":false,
+                        "created_at":"2019-03-03T03:53:05.460Z",
+                        "updated_at":"2019-03-03T03:53:05.460Z"
+                      },..
+                    ]
+                  }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ "User not found", ... ]"
+                    }```
+
+### View friend activity
+----
+  View friends activity
+
+* **URL**
+
+  /users/:id/friend_activity
+
+* **Method:**
+
+  `GET`
+  
+*  **URL Params**
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "friend_activity": [
+                        "John Smith": {
+                            "reminders_created": [
+                              {
+                                "id:" 1,
+                                "title": "New",
+                                "public": true,
+                                "status": "New"
+                                "creator_id": 1,
+                                "caller_id": 2,
+                                "will_trigger_at": "2018-10-12T00:00:00Z",
+                              }
+                            ],
+                            "reminders_reminded": [
+                              {
+                                "id:" 1,
+                                "title": "New",
+                                "public": true,
+                                "status": "New"
+                                "creator_id": 1,
+                                "caller_id": 2,
+                                "will_trigger_at": "2018-10-12T00:00:00Z",
+                              }
+                            ]
+                        }
+                    ]
+                  }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ "User not found", ... ]"
+                    }```
+
+### Hide Profile Activity
+----
+  Hides a user's profile activity
+
+* **URL**
+
+  /users/:id/hide_profile_activity
+
+* **Method:**
+
+  `POST`
+  
+*  **URL Params**
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "success": true
+                  }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ "User not found", ... ]"
+                    }```
+
+### Show Profile Activity
+----
+  Shows the user's profile activity
+
+* **URL**
+
+  /users/:id/hide_profile_activity
+
+* **Method:**
+
+  `POST`
+  
+*  **URL Params**
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "success": true
+                  }`
 
 * **Error Response:**
   * **Code:** 400, 404, etc <br />

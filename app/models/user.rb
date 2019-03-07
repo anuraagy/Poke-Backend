@@ -47,7 +47,7 @@ class User < ApplicationRecord
     
     activity_hash = {}
     activity_hash["reminders_created"] = reminders_created.to_a
-    activity_hash["remniders_reminded"] = reminders_reminded.to_a
+    activity_hash["reminders_reminded"] = reminders_reminded.to_a
 
     activity_hash
   end
