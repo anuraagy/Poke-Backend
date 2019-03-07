@@ -644,7 +644,59 @@ describe 'Users API' do
   end
 
   describe "User views friend activity" do 
+    before :each do 
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+      @sender = User.create!(user_params)
 
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password"
+      }
+      @user2 = User.create!(user_params)
+
+      @sender.friends << @user2
+      @user2.reminders_created.create(
+        title: "Test",
+        description: "Test",
+        will_trigger_at: Time.now + 10.days
+      )
+
+      http_login(@sender)
+    end
+
+    describe "Invalid" do
+      it "user id is bad" do
+        get "/api/v1/users/-1/friend_activity/",
+          params: {
+          },
+          headers: auth_headers
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "user is different than current user" do
+        get "/api/v1/users/#{@user2.id}/friend_activity/",
+          params: {},
+          headers: auth_headers
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    describe "Valid" do
+      it "views friend requests" do
+        get "/api/v1/users/#{@sender.id}/friend_activity/",
+          params: {},
+          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 
   describe "User hides profile activity" do

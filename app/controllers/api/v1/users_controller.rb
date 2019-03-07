@@ -291,7 +291,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       render status: :unauthorized, json: { errors: ["There is no user with that id"] }
     elsif user != current_user
       render status: :forbidden, json: { errors: ["You do not have access to this user"] }
-    elsif user.show_profile_activity
+    else
       render status: :ok, json: { friend_activity: user.friend_activity.as_json }
     end
   end
