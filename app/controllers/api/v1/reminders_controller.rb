@@ -1,4 +1,5 @@
 class Api::V1::RemindersController < Api::V1::BaseController
+  include TwilioHelper
   before_action :authenticate_request!
 
   def index
@@ -79,13 +80,46 @@ class Api::V1::RemindersController < Api::V1::BaseController
 
   end
 
-  def complete
+  def rating
+    params.require([:ids, :ratings])
+    ids = params[:ids]
+    ratings = params[:ratings]
+    if !ratings.is_a?(Array) || !ids.is_a?(Array) || ratings.length != ids.length
+      render status: :bad_request, json: { errors: ['ids/ratings should be arrays of same size'] }
+    end
+    ratings.each do |rating|
+      if rating.to_i < 0 || rating.to_i > 5
+        render status: :bad_request, json: { errors: ['rating should be between 0 and 5'] }
+        return
+      end
+    end
 
+    ids.zip(ratings).each do |id, rating|
+      reminder = Reminder.find(id.to_i)
+      if reminder.present?
+        if reminder.creator == current_user
+          reminder.update(caller_rating: rating.to_i)
+        elsif reminder.caller == current_user
+          reminder.update(creator_rating: rating.to_i)
+        end
+      end
+    end
+    render status: :ok, json: { success: true }
   end
+
+  def unrated
+    reminders = Reminder.where(caller: current_user).where(creator_rating: nil)
+      .or(Reminder.where(creator: current_user).where(caller_rating: nil))
+      .where(status: 'triggered')
+    render status: :ok, json: reminders
+  end
+
 
   private
 
   def reminder_params
-    params.permit(:title, :description, :status, :public, :creator_id, :caller_id, :will_trigger_at)
+    params.permit(:title, :description, :status, :public, :creator_id, :caller_id, :will_trigger_at, :push)
   end
 end
+
+Reminder.where(creator_id: 1).where(creator_rating: nil).or(Reminder.where(caller_id: 1).where(caller_rating: nil)).where(status: 'triggered')

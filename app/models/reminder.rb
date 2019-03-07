@@ -1,4 +1,6 @@
 class Reminder < ApplicationRecord
+  include TwilioHelper
+
   belongs_to :creator, :class_name => 'User'
   belongs_to :caller,  :class_name => 'User', optional: true
 
@@ -10,18 +12,35 @@ class Reminder < ApplicationRecord
   validates_inclusion_of :push  , in: [true, false]
 
   validate :valid_trigger_time?
+  validate :valid_push_user?
 
   def send_reminder!
-    # send the reminder
-    if self.push
-      # send push notification
+    #check for push notification
+    if self.push && creator.device_token.present?
+      push_notification("Don't forget! #{self.title}")
       return
     end
+
     reminding_user = User.in_reminder_lobby(creator).first
-    puts reminding_user.present?
+    # normal notification, get next user on top of queue
     if reminding_user.present?
+      #create twilio proxy session to mask number
+      masked_numer = self.creator.phone_number
+      if ENV.key?('MASKING_ENABLED')
+        session = TwilioHelper::create_proxy_session
+        self.update(proxy_session_sid: session.sid)
+        TwilioHelper::add_participant(session.sid, creator)
+        participant = TwilioHelper::add_participant(session.sid, reminding_user)
+        masked_numer = participant.proxy_identifier
+        Delayed::Job.enqueue(
+          ReminderBackupJob.new(reminder.id),
+          0,
+          Time.now + 3.minutes + 30.seconds
+        )
+      end
+      # return calling info to reminder user through actioncable
       msg = {}
-      msg['phone_number'] = self.creator.phone_number
+      msg['phone_number'] = masked_numer
       msg['title'] = self.title
       msg['time'] = self.will_trigger_at
       msg['name'] = self.creator.name
@@ -31,16 +50,39 @@ class Reminder < ApplicationRecord
       self.caller = reminding_user
       self.triggered_at = Time.now
       self.save
-    else
-      # push notification
+    elsif creator.device_token.present?
+      # no one in queue, send a push notification if we can.
+      push_notification("Sorry, no one was around to remind you! #{self.title}")
     end
+  end
 
+  def send_backup_reminder
+    if !self.did_proxy_interact
+      self.caller = nil
+      self.push = true
+      push_notification("Sorry, no one was around to remind you! #{self.title}") 
+    end
+  end
+
+  def push_notification(alert)
+    n = Rpush::Apns::Notification.new
+    n.app = Rpush::Apns::App.find_by_name("poke_ios")
+    n.device_token = creator.device_token
+    n.alert = alert
+    n.data = self.as_json
+    n.save!
   end
 
   def valid_trigger_time?
     #if will_trigger_at.present? && will_trigger_at < Time.now + 5.minutes
     #  errors.add(:will_trigger_at, "Has to be at least 5 minutes in the future")
     #end
+  end
+
+  def valid_push_user?
+    if push && !creator.device_token.present?
+      errors.add(:push, "User does not have push notifications on")
+    end
   end
 
   def triggered?

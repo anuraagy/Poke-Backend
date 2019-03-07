@@ -17,6 +17,10 @@ class User < ApplicationRecord
   validates :active,    presence: true
   validates :rating,    presence: true, numericality: { greater_than_or_equal_to: 0 , less_than_or_equal_to: 5 }
 
+  validates :name,         presence: true
+  validates :active,       presence: true
+  validates :phone_number, presence: true, length: { minimum: 10 }
+
   scope :in_reminder_lobby, ->(user) { where(ready_to_remind: true).where.not(id: user.id).order(updated_at: :desc) }
   scope :search_users, -> (query) { where("name LIKE ? OR email LIKE ?", "%#{query}%", "%#{query}%") }
 

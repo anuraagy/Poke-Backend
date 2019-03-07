@@ -5,6 +5,7 @@ Rails.application.routes.draw do
         get  'access_token',  to: 'access_token', on: :collection
         post "make_call",  to: 'make_call',  on: :collection
         post "place_call", to: 'place_call', on: :collection
+        post 'callback', to: 'callback', on: :collection
       end
       resources :users, only: [:index, :update] do
         post 'register',        to: "register",        on: :collection
@@ -38,8 +39,11 @@ Rails.application.routes.draw do
       end
 
       resources :reminders, only: [:index, :show, :create, :update, :destroy] do
-        post 'start', to: "start", on: :collection
-        post 'end',   to: "end",   on: :collection
+        post 'start',    to: "start",    on: :collection
+        post 'end',      to: "end",      on: :collection
+        post 'rating',   to: 'rating',   on: :collection
+        post 'complete', to: 'complete', on: :member
+        get  'unrated',  to: 'unrated',  on: :collection
       end
     end
   end

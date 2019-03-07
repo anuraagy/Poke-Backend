@@ -304,7 +304,8 @@ class Api::V1::UsersController < Api::V1::BaseController
       :twilio_id,
       :email,
       :facebook_token,
-      :phone_number
+      :phone_number,
+      :device_token
     )
   end
 
@@ -314,7 +315,8 @@ class Api::V1::UsersController < Api::V1::BaseController
       :twilio_id,
       :email,
       :google_token,
-      :phone_number
+      :phone_number,
+      :device_token
     )
   end
 
@@ -329,7 +331,8 @@ class Api::V1::UsersController < Api::V1::BaseController
       :active, 
       :rating,
       :phone_number,
-      :profile_picture
+      :profile_picture,
+      :device_token
     )
   end
 
