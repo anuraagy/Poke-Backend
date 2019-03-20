@@ -7,7 +7,8 @@ describe 'Reminders API' do
     user_params = {
       name: "Test",
       email: "test@test.com", 
-      password: "password"
+      password: "password",
+      phone_number: "1234567890"
     }
     @user = User.create!(user_params)
     @reminder = Reminder.create!({
@@ -21,7 +22,8 @@ describe 'Reminders API' do
     user2_params = {
       name: "Test2",
       email: "test2@test.com", 
-      password: "password"
+      password: "password",
+      phone_number: "1234567890"
     }
     @user2 = User.create!(user2_params)
 
@@ -31,21 +33,6 @@ describe 'Reminders API' do
 
   describe 'Reminder create' do
     describe "Invalid" do 
-      it "no description sent in body" do
-        post '/api/v1/reminders',
-          params: {
-            title: "New",
-            status: "New", 
-            public: true,
-            creator_id: @user.id,
-            will_trigger_at: Time.now + 10.minutes
-          },
-          headers: auth_headers
-        
-        expect(response).to have_http_status(:bad_request)
-        expect(json["errors"]).to include("Description can't be blank")
-      end
-
       it "no creator sent in body" do
         post '/api/v1/reminders',
           params: {
@@ -108,22 +95,6 @@ describe 'Reminders API' do
     end
 
     describe "Invalid" do 
-      it "nil description sent in body" do
-        put "/api/v1/reminders/#{@reminder.id}",
-          params: {
-            title: "New",
-            description: nil,
-            status: "New", 
-            public: true,
-            creator_id: @user.id,
-            will_trigger_at: Time.now + 10.minutes
-          },
-          headers: auth_headers
-        
-        expect(response).to have_http_status(:bad_request)
-        expect(json["errors"]).to include("Description can't be blank")
-      end
-
       it "nil creator sent in body" do
         put "/api/v1/reminders/#{@reminder.id}",
           params: {

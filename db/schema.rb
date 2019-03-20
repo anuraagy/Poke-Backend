@@ -12,7 +12,6 @@
 
 ActiveRecord::Schema.define(version: 2019_03_05_015933) do
 
-
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -146,7 +145,6 @@ ActiveRecord::Schema.define(version: 2019_03_05_015933) do
     t.string "external_device_id"
     t.string "thread_id"
     t.index ["delivered", "failed", "processing", "deliver_after", "created_at"], name: "index_rpush_notifications_multi", where: "((NOT delivered) AND (NOT failed))"
->>>>>>> 6df6676937279e5e94ccd1f5d0e6435704e6d525
   end
 
   create_table "users", force: :cascade do |t|
@@ -163,11 +161,8 @@ ActiveRecord::Schema.define(version: 2019_03_05_015933) do
     t.string "facebook_token"
     t.string "google_token"
     t.string "profile_picture"
-<<<<<<< HEAD
     t.boolean "activity_hidden", default: false, null: false
-=======
     t.string "device_token"
->>>>>>> 6df6676937279e5e94ccd1f5d0e6435704e6d525
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true

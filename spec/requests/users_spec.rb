@@ -8,7 +8,8 @@ describe 'Users API' do
         post '/api/v1/users/register',
           params: {
             email: nil,
-            password: "password"
+            password: "password",
+            phone_number: "1234567890"
           }
         
         expect(response).to have_http_status(:bad_request)
@@ -19,7 +20,8 @@ describe 'Users API' do
         post '/api/v1/users/register',
           params: {
             email: "test@tester.com",
-            password: nil
+            password: nil,
+            phone_number: "1234567890"
           }
         
         expect(response).to have_http_status(:bad_request)
@@ -30,7 +32,8 @@ describe 'Users API' do
         user_params = {
           email: "test@tester.com",
           name: "test",
-          password: "password"
+          password: "password",
+          phone_number: "1234567890"
         }
 
         user = User.create!(user_params)
@@ -46,7 +49,8 @@ describe 'Users API' do
         post '/api/v1/users/register',
           params: {
             email: "test",
-            password: "password"
+            password: "password",
+            phone_number: "1234567890"
           }
         
         expect(response).to have_http_status(:bad_request)
@@ -57,7 +61,8 @@ describe 'Users API' do
         post '/api/v1/users/register',
           params: {
             email: "test@tester.com",
-            password: "1"
+            password: "1",
+            phone_number: "1234567890"
           }
         
         expect(response).to have_http_status(:bad_request)
@@ -71,7 +76,8 @@ describe 'Users API' do
           params: {
             email: "valid@tester.com",
             name: "nonblank name",
-            password: "password"
+            password: "password",
+            phone_number: "1234567890"
           }
         
         expect(response).to have_http_status(:ok)
@@ -84,7 +90,8 @@ describe 'Users API' do
       user_params = {
         name: "Tester",
         email: "tester@test.com", 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @user = User.create!(user_params)
     end
@@ -94,7 +101,8 @@ describe 'Users API' do
         post '/api/v1/users/authenticate',
           params: {
             email: nil,
-            password: "password"
+            password: "password",
+            phone_number: "1234567890"
           }
 
         expect(response).to have_http_status(:unauthorized)
@@ -105,7 +113,8 @@ describe 'Users API' do
         post '/api/v1/users/authenticate',
           params: {
             email: "tester@test.com",
-            password: nil
+            password: nil,
+            phone_number: "1234567890"
           }
 
         expect(response).to have_http_status(:unauthorized)
@@ -116,7 +125,8 @@ describe 'Users API' do
         post '/api/v1/users/authenticate',
           params: {
             email: "tester@test.com",
-            password: "blehbleh"
+            password: "blehbleh",
+            phone_number: "1234567890"
           }
 
         expect(response).to have_http_status(:unauthorized)
@@ -127,7 +137,8 @@ describe 'Users API' do
         post '/api/v1/users/authenticate',
           params: {
             email: "tester",
-            password: "password"
+            password: "password",
+            phone_number: "1234567890"
           }
 
         expect(response).to have_http_status(:unauthorized)
@@ -140,7 +151,8 @@ describe 'Users API' do
         post '/api/v1/users/authenticate',
           params: {
             email: "tester@test.com",
-            password: "password"
+            password: "password",
+            phone_number: "1234567890"
           }
         expect(response).to have_http_status(:ok)
       end
@@ -153,7 +165,8 @@ describe 'Users API' do
         post '/api/v1/users/facebook',
           params: {
             email: nil,
-            facebook_token: "oqwaisfasdkjfyawaeoriyuw"
+            facebook_token: "oqwaisfasdkjfyawaeoriyuw",
+            phone_number: "1234567890"
           }
         expect(response).to have_http_status(:unauthorized)
         expect(json["errors"]).to include("This is an invalid facebook token!")
@@ -163,7 +176,8 @@ describe 'Users API' do
         post '/api/v1/users/facebook',
           params: {
             email: "test@tset.com",
-            facebook_token: nil
+            facebook_token: nil,
+            phone_number: "1234567890"
           }
         expect(response).to have_http_status(:unauthorized)
         expect(json["errors"]).to include("This is an invalid facebook token!")
@@ -173,7 +187,8 @@ describe 'Users API' do
         post '/api/v1/users/facebook',
           params: {
             email: "etst",
-            facebook_token: "oqwaisfasdkjfyawaeoriyuw"
+            facebook_token: "oqwaisfasdkjfyawaeoriyuw",
+            phone_number: "1234567890"
           }
         expect(response).to have_http_status(:unauthorized)
         expect(json["errors"]).to include("This is an invalid facebook token!")
@@ -187,7 +202,8 @@ describe 'Users API' do
         user_params = {
           name: "Test",
           email: "test@test.com", 
-          password: "password"
+          password: "password",
+          phone_number: "1234567890"
         }
         @user = User.create!(user_params)
         @reminder = Reminder.create!({
@@ -241,7 +257,8 @@ describe 'Users API' do
         user_params = {
           name: "Test",
           email: "test@test.com", 
-          password: "password"
+          password: "password",
+          phone_number: "1234567890"
         }
         @user = User.create!(user_params)
 
@@ -264,7 +281,8 @@ describe 'Users API' do
         user_params = {
           name: "Test",
           email: "test@test.com", 
-          password: "password"
+          password: "password",
+          phone_number: "1234567890"
         }
         @user = User.create!(user_params)
 
@@ -274,7 +292,7 @@ describe 'Users API' do
       it "change name to blank" do
         put "/api/v1/users/#{@user.id}",
           params: {
-            name: "Blank"
+            name: "Blank",
           },
           headers: auth_headers
 
@@ -288,14 +306,16 @@ describe 'Users API' do
       user_params = {
         name: "Test",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @reporter = User.create!(user_params)
 
       user_params = {
         name: "Test",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @reportee = User.create!(user_params)
 
@@ -369,14 +389,16 @@ describe 'Users API' do
       user_params = {
         name: "Test",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @sender = User.create!(user_params)
 
       user_params = {
         name: "Test",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @receiver = User.create!(user_params)
 
@@ -424,14 +446,16 @@ describe 'Users API' do
       user_params = {
         name: "Test",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @sender = User.create!(user_params)
 
       user_params = {
         name: "Test",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @receiver = User.create!(user_params)
 
@@ -481,14 +505,16 @@ describe 'Users API' do
       user_params = {
         name: "Test",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @sender = User.create!(user_params)
 
       user_params = {
         name: "Test",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @receiver = User.create!(user_params)
 
@@ -538,14 +564,16 @@ describe 'Users API' do
       user_params = {
         name: "Test",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @sender = User.create!(user_params)
 
       user_params = {
         name: "Test",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @receiver = User.create!(user_params)
 
@@ -590,21 +618,24 @@ describe 'Users API' do
       user_params = {
         name: "Test",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @sender = User.create!(user_params)
 
       user_params = {
         name: "Test",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @user2 = User.create!(user_params)
 
       user_params = {
         name: "Test1",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
 
       @user3 = User.create!(user_params)
@@ -612,7 +643,8 @@ describe 'Users API' do
       user_params = {
         name: "Test2",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @user4 = User.create!(user_params)
 
@@ -648,14 +680,16 @@ describe 'Users API' do
       user_params = {
         name: "Test",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @sender = User.create!(user_params)
 
       user_params = {
         name: "Test",
         email: Faker::Internet.email, 
-        password: "password"
+        password: "password",
+        phone_number: "1234567890"
       }
       @user2 = User.create!(user_params)
 
@@ -705,14 +739,16 @@ describe 'Users API' do
         user_params = {
           name: "Test",
           email: "test@test.com", 
-          password: "password"
+          password: "password",
+        phone_number: "1234567890"
         }
         @user = User.create!(user_params)
 
         user_params = {
           name: "Test",
           email: "test@test2.com", 
-          password: "password"
+          password: "password",
+        phone_number: "1234567890"
         }
 
         @user2 = User.create!(user_params)
@@ -743,7 +779,8 @@ describe 'Users API' do
         user_params = {
           name: "Test",
           email: "test@test.com", 
-          password: "password"
+          password: "password",
+          phone_number: "1234567890"
         }
         @user = User.create!(user_params)
 
@@ -768,13 +805,15 @@ describe 'Users API' do
         user_params = {
           name: "Test",
           email: "test@test1.com", 
-          password: "password"
+          password: "password",
+          phone_number: "1234567890"
         }
         @user1 = User.create!(user_params)
         user_params = {
           name: "Test",
           email: "test@test.com", 
-          password: "password"
+          password: "password",
+          phone_number: "1234567890"
         }
         @user = User.create!(user_params)
         @reminder = Reminder.create!({
