@@ -121,5 +121,3 @@ class Api::V1::RemindersController < Api::V1::BaseController
     params.permit(:title, :description, :status, :public, :creator_id, :caller_id, :will_trigger_at, :push)
   end
 end
-
-Reminder.where(creator_id: 1).where(creator_rating: nil).or(Reminder.where(caller_id: 1).where(caller_rating: nil)).where(status: 'triggered')
