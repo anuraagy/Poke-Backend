@@ -66,7 +66,17 @@ class Reminder < ApplicationRecord
 
   def push_notification(alert)
     n = Rpush::Apns::Notification.new
-    n.app = Rpush::Apns::App.find_by_name("poke_ios")
+    n.app = Rpush::Apns::App.find_by_name('poke_ios')
+    if n.app.nil?
+      apns_file = File.join(Rails.root, 'development.pem')
+      n.app = Rpush::Apns::App.new
+      n.app.name = 'poke_ios'
+      n.app.certificate = File.read(apns_file)
+      n.app.environment = 'development' # APNs environment.
+      n.app.password = '' #Rails.application.credentials.apns_cert_pw
+      n.app.connections = 1
+      n.app.save!
+    end
     n.device_token = creator.device_token
     n.alert = alert
     n.data = self.as_json
