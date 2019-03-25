@@ -84,6 +84,67 @@ describe 'Users API' do
       end
     end    
   end
+  describe "Update user" do
+    describe "Valid" do 
+      it "updates a user" do 
+          user_params = {
+            email: "valid@tester.com",
+            name: "nonblank name",
+            password: "password",
+            phone_number: "1234567890"
+          }
+          user = User.create!(user_params)
+          http_login(user)
+          put "/api/v1/users/#{user.id}",
+          params: {
+            name: "new name",
+            password: "new pass",
+            phone_number: "0987654321",
+            device_token: "token"
+          },
+          headers: auth_headers
+        
+        expect(response).to have_http_status(:ok)
+      end
+    end
+    describe "Invalid" do 
+      it "updates a user, unauthenticated" do 
+          user_params = {
+            email: "valid@tester.com",
+            name: "nonblank name",
+            password: "password",
+            phone_number: "1234567890"
+          }
+          user = User.create!(user_params)
+          put "/api/v1/users/#{user.id}",
+          params: {
+            name: "new name",
+            password: "new pass",
+            phone_number: "0987654321",
+            device_token: "token"
+          }
+        
+        expect(response).to have_http_status(:unauthorized)
+      end
+      it "users invalid fields" do 
+        user_params = {
+          email: "valid@tester.com",
+          name: "nonblank name",
+          password: "password",
+          phone_number: "1234567890"
+        }
+        user = User.create!(user_params)
+        put "/api/v1/users/#{user.id}",
+        params: {
+          email: "invalid",
+          password: "bad",
+          phone_number: "not_a_phone_number",
+        }
+      
+      expect(response).to have_http_status(:unauthorized)
+    end
+    end
+  end
 
   describe 'User authenticate with email/password' do
     before :each do
@@ -675,7 +736,7 @@ describe 'Users API' do
 
   end
 
-  describe "User views friend activity" do 
+  describe "User views friend activity" do
     before :each do 
       user_params = {
         name: "Test",
@@ -729,6 +790,53 @@ describe 'Users API' do
           headers: auth_headers
 
         expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
+  describe "private doesnt appear in activity" do
+    before :each do 
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password",
+        phone_number: "1234567890"
+      }
+      @sender = User.create!(user_params)
+
+      user_params = {
+        name: "Test",
+        email: Faker::Internet.email, 
+        password: "password",
+        phone_number: "1234567890"
+      }
+      @user2 = User.create!(user_params)
+
+      @sender.friends << @user2
+      
+      reminder_params = {
+        title: "New",
+        description: "Test description",
+        status: "New", 
+        public: false,
+        push: false,
+        creator_id: @user2.id,
+        will_trigger_at: Time.now + 10.minutes
+      }
+      @reminder = Reminder.create!(reminder_params)
+
+      http_login(@sender)
+    end
+
+    describe "Valid" do
+      it "tests if a private reminder shows up in activity" do
+        get "/api/v1/users/#{@sender.id}/friend_activity/",
+          params: {},
+          headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        resp = JSON.parse(response.body)
+        expect(resp['friend_activity'][0][@user2.name]['reminders_created']).to be_empty
+        expect(resp['friend_activity'][0][@user2.name]['reminders_reminded']).to be_empty
       end
     end
   end

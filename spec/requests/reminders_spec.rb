@@ -8,6 +8,7 @@ describe 'Reminders API' do
       name: "Test",
       email: "test@test.com", 
       password: "password",
+      device_token: "not_a_device_token",
       phone_number: "1234567890"
     }
     @user = User.create!(user_params)
@@ -171,7 +172,7 @@ describe 'Reminders API' do
     end
     
     describe "Valid" do 
-      it "creates a reminder" do 
+      it "deletes a reminder" do 
         delete "/api/v1/reminders/#{@reminder.id}",
           headers: auth_headers
         
@@ -201,5 +202,134 @@ describe 'Reminders API' do
       end
     end
   end
+  describe 'Push notification reminders' do
+    describe 'Valid' do
+      it 'create push notification reminder' do
+        http_login(@user)
+        post '/api/v1/reminders',
+          params: {
+            title: "New",
+            description: "Test description",
+            status: "New", 
+            public: true,
+            push: true,
+            creator_id: @user.id,
+            will_trigger_at: Time.now + 10.minutes
+          },
+          headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)['reminder']['push']).to be_truthy
+      end
+    end
+    describe 'Invalid' do
+      it 'create push notification reminder with no device_token' do
+        http_login(@user2)
+        post '/api/v1/reminders',
+          params: {
+            title: "New",
+            description: "Test description",
+            status: "New", 
+            public: true,
+            push: true,
+            creator_id: @user2.id,
+            will_trigger_at: Time.now + 10.minutes
+          },
+          headers: auth_headers
+        expect(response).to have_http_status(:bad_request)
+      end
+    end
+  end
+  describe 'Reminder rating' do
+    before :each do 
+      reminder_params = {
+        title: "New",
+        description: "Test description",
+        status: "New", 
+        public: true,
+        push: false,
+        creator_id: @user.id,
+        will_trigger_at: Time.now + 10.minutes
+      }
 
+      @reminder = Reminder.create!(reminder_params)
+    end
+
+    describe 'Valid' do
+      it 'sets a rating for caller and creator' do
+        @reminder.update(caller: @user2)
+        post '/api/v1/reminders/rating',
+          params: {
+            ids: [@reminder.id],
+            ratings: [3]
+          },
+          headers: auth_headers
+        expect(Reminder.find_by_id(@reminder.id).caller_rating).to eq 3
+        expect(response).to have_http_status(:ok)
+        http_login(@user2)
+        post '/api/v1/reminders/rating',
+          params: {
+            ids: [@reminder.id],
+            ratings: [5]
+          },
+          headers: auth_headers
+        expect(Reminder.find_by_id(@reminder.id).creator_rating).to eq 5
+        expect(response).to have_http_status(:ok)
+      end
+    end
+    describe 'Invalid' do
+      it 'ratings[] and id[] wrong type' do
+        @reminder.update(caller: @user2)
+        post '/api/v1/reminders/rating',
+          params: {
+            ids: 3,
+            ratings: 3
+          },
+          headers: auth_headers
+        expect(response).to have_http_status(:bad_request)
+      end
+      it 'ratings[] and ids[] different sizes' do
+        @reminder.update(caller: @user2)
+        post '/api/v1/reminders/rating',
+          params: {
+            ids: [3,5],
+            ratings: [3]
+          },
+          headers: auth_headers
+        expect(response).to have_http_status(:bad_request)
+      end
+      it 'ratings less than range' do
+        @reminder.update(caller: @user2)
+        post '/api/v1/reminders/rating',
+          params: {
+            ids: [@reminder.id],
+            ratings: [-1]
+          },
+          headers: auth_headers
+        expect(response).to have_http_status(:bad_request)
+      end
+      it 'ratings less than range' do
+        @reminder.update(caller: @user2)
+        post '/api/v1/reminders/rating',
+          params: {
+            ids: [@reminder.id],
+            ratings: [-6]
+          },
+          headers: auth_headers
+        expect(response).to have_http_status(:bad_request)
+      end
+      it 'user not part of reminder' do
+        @reminder.update(caller: nil)
+        http_login(@user2)
+        post '/api/v1/reminders/rating',
+          params: {
+            ids: [@reminder.id],
+            ratings: [3]
+          },
+          headers: auth_headers
+        expect(Reminder.find_by_id(@reminder.id).creator_rating).to be_nil
+        expect(Reminder.find_by_id(@reminder.id).caller_rating).to be_nil
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
 end

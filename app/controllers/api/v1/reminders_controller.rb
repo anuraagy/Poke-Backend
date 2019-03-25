@@ -86,6 +86,7 @@ class Api::V1::RemindersController < Api::V1::BaseController
     ratings = params[:ratings]
     if !ratings.is_a?(Array) || !ids.is_a?(Array) || ratings.length != ids.length
       render status: :bad_request, json: { errors: ['ids/ratings should be arrays of same size'] }
+      return
     end
     ratings.each do |rating|
       if rating.to_i < 0 || rating.to_i > 5

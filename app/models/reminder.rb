@@ -65,6 +65,7 @@ class Reminder < ApplicationRecord
   end
 
   def push_notification(alert)
+    return if Rails.env.test?
     n = Rpush::Apns::Notification.new
     n.app = Rpush::Apns::App.find_by_name('poke_ios')
     if n.app.nil?
