@@ -32,6 +32,10 @@ class User < ApplicationRecord
     friend_request.destroy
   end
 
+  def toggle_profile_activity
+    update(activity_hidden: !activity_hidden)
+  end
+
   def hide_profile_activity
     return false if activity_hidden
     update(activity_hidden: true)

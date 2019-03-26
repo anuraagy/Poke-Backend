@@ -284,6 +284,20 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
   end
 
+  def toggle_profile_activity
+    user = User.find_by(id: params[:id])
+
+    if user.blank?
+      render status: :unauthorized, json: { errors: ["There is no user with that id"] }
+    elsif user != current_user
+      render status: :forbidden, json: { errors: ["You do not have access to this user"] }
+    elsif user.toggle_profile_activity
+      render status: :ok, json: { activity_hidden: user.activity_hidden }
+    else
+      render status: :bad_request, json: { errors: ["Unable to show profile activity"] }
+    end
+  end
+
   def friend_activity
     user = User.find_by(id: params[:id])
 

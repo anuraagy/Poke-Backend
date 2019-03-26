@@ -30,6 +30,7 @@ Rails.application.routes.draw do
         post "decline_friend_request",    to: "decline_friend_request",    on: :member
 
         post "show_profile_activity", to: "show_profile_activity",    on: :member
+        post "toggle_profile_activity", to: "toggle_profile_activity", on: :member
         post "hide_profile_activity", to: "hide_profile_activity",    on: :member
 
         get  '/:email',       action: 'show', on: :collection, :constraints  => { :email => /[0-z\.]+/ }
