@@ -111,7 +111,7 @@ class Api::V1::RemindersController < Api::V1::BaseController
   def unrated
     reminders = Reminder.where(caller: current_user).where(creator_rating: nil)
       .or(Reminder.where(creator: current_user).where(caller_rating: nil))
-      .where(status: 'triggered')
+      .where(status: 'triggered').where(did_proxy_interact: true)
     render status: :ok, json: reminders
   end
 
