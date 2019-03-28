@@ -56,7 +56,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
     if user&.valid_password?(user_params[:password])
       render status: :ok, json: {
-        auth_token: JSONWebToken.encode(user.as_json.symbolize_keys)
+        auth_token: JSONWebToken.encode(user.as_json(except: [:profile_picture]).symbolize_keys)
       }
     else
       render status: :unauthorized, json: { errors: ["Invalid email or password submitted"] }
@@ -68,7 +68,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
     if user.save
       render status: :ok, json: {
-        auth_token: JSONWebToken.encode(user.as_json.symbolize_keys)
+        auth_token: JSONWebToken.encode(user.as_json(except: [:profile_picture]).symbolize_keys)
       }
     else
       render status: :bad_request, json: { errors: user.errors.full_messages.as_json }
@@ -83,7 +83,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     else 
       user.save(validate: false)
       render status: :ok, json: {
-        auth_token: JSONWebToken.encode(user.as_json.symbolize_keys)
+        auth_token: JSONWebToken.encode(user.as_json(except: [:profile_picture]).symbolize_keys)
       }
     end
   end
@@ -96,7 +96,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     else 
       user.save(validate: false)
       render status: :ok, json: {
-        auth_token: JSONWebToken.encode(user.as_json.symbolize_keys)
+        auth_token: JSONWebToken.encode(user.as_json(except: [:profile_picture]).symbolize_keys)
       }
     end
   end
@@ -124,7 +124,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       render status: :forbidden, json: { errors: ["You do not have access to this user"] }
     elsif user&.update(user_params)
       render status: :ok, json: {
-        auth_token: JSONWebToken.encode(user.as_json.symbolize_keys)
+        auth_token: JSONWebToken.encode(user.as_json(except: [:profile_picture]).symbolize_keys)
       }
     else
       render status: :unauthorized, json: { errors: user.errors.full_messages }
