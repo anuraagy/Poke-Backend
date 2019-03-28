@@ -33,7 +33,7 @@ class Reminder < ApplicationRecord
         participant = TwilioHelper::add_participant(session.sid, reminding_user)
         masked_numer = participant.proxy_identifier
         Delayed::Job.enqueue(
-          ReminderBackupJob.new(reminder.id),
+          ReminderBackupJob.new(id),
           0,
           Time.now + 3.minutes + 30.seconds
         )
