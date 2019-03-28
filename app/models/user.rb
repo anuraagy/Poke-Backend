@@ -47,7 +47,7 @@ class User < ApplicationRecord
   end
 
   def friend_activity
-    friends.map { |friend|  { friend.name => friend.activity }}
+    friends.map { |friend|  friend.activity.merge({ name: friend.name }) } 
   end
 
   def activity
