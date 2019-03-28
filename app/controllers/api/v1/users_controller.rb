@@ -249,7 +249,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def search
     if params[:query].present?
-      results = User.search_users(params[:query])
+      results = User.search_users(params[:query]).map {|user| UserSerializer.new(user) }
       render status: :ok, json: { results: results.as_json }
     else
       render status: :bad_request, json: { errors: ["No query sent"] }
