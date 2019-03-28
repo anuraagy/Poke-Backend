@@ -2,6 +2,7 @@ class Api::V1::TwilioController < Api::V1::BaseController
   include TwilioHelper
 
   def callback
+    puts params
     if params[:outboundResourceStatus] == 'completed' and params[:outboundResourceType] == 'call'
       TwilioHelper::close_proxy_session(params[:interactionSessionSid])
     end
