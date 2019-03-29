@@ -174,7 +174,19 @@ class Api::V1::UsersController < Api::V1::BaseController
     elsif user != current_user
       render status: :forbidden, json: { errors: ["You do not have access to this user"] }
     else
-        render status: :ok, json: { friend_requests: user.friend_requests_sent.where.not(status: "accepted").includes(:receiver).map{|x| x.receiver.slice(:name, :id)}.as_json }
+      render status: :ok, json: { friend_requests:
+        user.friend_requests_sent
+          .where.not(status: "accepted")
+          .includes(:receiver)
+          .map do |x|
+            h = {}
+            h['id'] = x.id
+            h['name'] = x.receiver.name
+            h['friend_id'] = x.receiver.id
+            h
+          end
+          .as_json
+      }
     end
   end
 
@@ -186,7 +198,19 @@ class Api::V1::UsersController < Api::V1::BaseController
     elsif user != current_user
       render status: :forbidden, json: { errors: ["You do not have access to this user"] }
     else
-        render status: :ok, json: { friend_requests: user.friend_requests_sent.where.not(status: "accepted").includes(:sender).map{|x| x.sender.slice(:name, :id)}.as_json }
+      render status: :ok, json: { friend_requests:
+        user.friend_requests_received
+          .where.not(status: "accepted")
+          .includes(:sender)
+          .map do |x|
+            h = {}
+            h['id'] = x.id
+            h['name'] = x.sender.name
+            h['friend_id'] = x.sender.id
+            h
+          end
+          .as_json
+      }
     end
   end
 
@@ -369,3 +393,4 @@ class Api::V1::UsersController < Api::V1::BaseController
     params.permit(:reportee_id, :reporter_id, :reason)
   end
 end
+

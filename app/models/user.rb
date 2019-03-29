@@ -25,6 +25,7 @@ class User < ApplicationRecord
   scope :search_users, -> (query) { where("name LIKE ? OR email LIKE ?", "%#{query}%", "%#{query}%") }
 
   def accept_friend_request(friend_request)
+    friend_request.update(status: 'accepted')
     friends << friend_request.sender 
   end
 
