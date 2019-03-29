@@ -321,7 +321,7 @@ class Api::V1::UsersController < Api::V1::BaseController
           results << User.where("name LIKE ? OR email LIKE ? OR phone_number LIKE ?", "%#{x}%", "%#{x}%", "%#{x}%")
             .select(User.attribute_names - ['profile_picture'])
       end
-      render status: :ok, json: { results: results }
+      render status: :ok, json: { results: results.flatten.as_json }
   end
 
 
