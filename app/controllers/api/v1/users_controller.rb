@@ -174,7 +174,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     elsif user != current_user
       render status: :forbidden, json: { errors: ["You do not have access to this user"] }
     else
-      render status: :ok, json: { friend_requests: user.friend_requests_sent.where.not(status: "accepted").includes(:receiver).map{|x| x.slice(:name, :id)}.as_json }
+        render status: :ok, json: { friend_requests: user.friend_requests_sent.where.not(status: "accepted").includes(:receiver).map{|x| x.receiver.slice(:name, :id)}.as_json }
     end
   end
 
@@ -186,7 +186,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     elsif user != current_user
       render status: :forbidden, json: { errors: ["You do not have access to this user"] }
     else
-      render status: :ok, json: { friend_requests: user.friend_requests_sent.where.not(status: "accepted").includes(:sender).map{|x| x.slice(:name, :id)}.as_json }
+        render status: :ok, json: { friend_requests: user.friend_requests_sent.where.not(status: "accepted").includes(:sender).map{|x| x.sender.slice(:name, :id)}.as_json }
     end
   end
 
