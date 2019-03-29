@@ -7,6 +7,7 @@ class Api::V1::TwilioController < Api::V1::BaseController
       TwilioHelper::close_proxy_session(params[:interactionSessionSid])
     end
     if params[:outboundResourceStatus] == 'delivered' ||
+       params[:outboundResourceStatus] == 'initiated' ||
        params[:outboundResourceStatus] == 'completed'
       r = Reminder.find_by(proxy_session_sid: params[:interactionSessionSid])
       r.update(did_proxy_interact: true)
