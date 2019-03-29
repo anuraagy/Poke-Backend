@@ -195,6 +195,8 @@ class Api::V1::UsersController < Api::V1::BaseController
     friend = User.find_by(id: params[:friend_id])
     if FriendRequest.where(sender: user).where(receiver: friend).count > 0
       render status: :ok, json: { success: true }
+      return
+    end
     if user.blank?
       render status: :unauthorized, json: { errors: ["There is no user with that id"] }
       return
