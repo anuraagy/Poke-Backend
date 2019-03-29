@@ -312,6 +312,18 @@ class Api::V1::UsersController < Api::V1::BaseController
       render status: :ok, json: { friend_activity: user.friend_activity.as_json }
     end
   end
+  
+  def find_friends
+      identifiers = params[:identifiers]
+      results = []
+      puts "test"
+      identifiers.each do |x|
+          results << User.where("name LIKE ? OR email LIKE ? OR phone_number LIKE ?", "%#{x}%", "%#{x}%", "%#{x}%")
+            .select(User.attribute_names - ['profile_picture'])
+      end
+      render status: :ok, json: { results: results }
+  end
+
 
   private
 

@@ -33,6 +33,8 @@ Rails.application.routes.draw do
         post "toggle_profile_activity", to: "toggle_profile_activity", on: :member
         post "hide_profile_activity", to: "hide_profile_activity",    on: :member
 
+        post "find_friends", to: "find_friends", on: :collection
+
         get  '/:email',       action: 'show', on: :collection, :constraints  => { :email => /[0-z\.]+/ }
         get  '/profile_by_id/:id', action: 'show_id',   on: :collection
         get  '/:email/profile_picture', action: 'profile_picture',
