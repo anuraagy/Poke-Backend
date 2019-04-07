@@ -1181,3 +1181,86 @@ and the reminder in the payload. E.g.:
                       ]
                     }
                   }`
+
+
+### Comments endpoint
+----
+  Get comments for a reminder
+
+* **URL**
+
+  /reminders/:id/comments
+
+* **Method:**
+  `POST`
+  
+  * **Headers**: <br />
+  `Authorization: Bearer <auth_token>`
+
+*  **URL Params**
+
+   **Required:**
+   `id=[integer]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{ 
+                    "comments": [
+                      { content: "Comment 1", user_id: 1, reminder_id: 1 }
+                     ]
+                  }`
+  
+* **Error Response:**
+
+  * **Code:** 400 <br />
+    **Content:** `{
+                    "errors": {
+                      [
+                        "Reminder does not exist or you do not have access",
+                        "...",
+                        ..
+                      ]
+                    }
+                  }`
+
+### Likes endpoint
+----
+  Get likes for a reminder
+
+* **URL**
+
+  /reminders/:id/likes
+
+* **Method:**
+  `POST`
+  
+  * **Headers**: <br />
+  `Authorization: Bearer <auth_token>`
+
+*  **URL Params**
+
+   **Required:**
+   `id=[integer]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{ 
+                    "likes": [
+                      { user_id: 1, reminder_id: 1 }
+                     ]
+                  }`
+  
+* **Error Response:**
+
+  * **Code:** 400 <br />
+    **Content:** `{
+                    "errors": {
+                      [
+                        "Reminder does not exist or you do not have access",
+                        "...",
+                        ..
+                      ]
+                    }
+                  }`

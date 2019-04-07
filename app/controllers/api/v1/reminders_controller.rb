@@ -115,6 +115,26 @@ class Api::V1::RemindersController < Api::V1::BaseController
     render status: :ok, json: reminders
   end
 
+  def likes
+    reminder = Reminder.find_by(id: params[:id])
+
+    if reminder.blank?
+      render status: :bad_request, json: { errors: ["There is no reminder with that id!"] }
+    else
+      render status: :ok, json: { likes: reminder.likes.as_json }
+    end
+  end
+
+
+  def comments
+    reminder = Reminder.find_by(id: params[:id])
+
+    if reminder.blank?
+      render status: :bad_request, json: { errors: ["There is no reminder with that id!"] }
+    else
+      render status: :ok, json: { comments: reminder.comments.as_json }
+    end
+  end
 
   private
 
