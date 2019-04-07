@@ -7,6 +7,7 @@ Rails.application.routes.draw do
         post "place_call", to: 'place_call', on: :collection
         post 'callback', to: 'callback', on: :collection
       end
+
       resources :users, only: [:index, :update] do
         post 'register',        to: "register",        on: :collection
         post 'authenticate',    to: "authenticate",    on: :collection
@@ -40,6 +41,9 @@ Rails.application.routes.draw do
         get  '/:email/profile_picture', action: 'profile_picture',
           on: :collection, :constraints  => { :email => /[0-z\.]+/ }
       end
+
+      resources :comments, only: [:create, :destroy]
+      resources :likes, only: [:create, :destroy]
 
       resources :reminders, only: [:index, :show, :create, :update, :destroy] do
         post 'start',    to: "start",    on: :collection

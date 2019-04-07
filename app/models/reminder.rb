@@ -2,6 +2,7 @@ class Reminder < ApplicationRecord
   include TwilioHelper
 
   has_many :comments
+  has_many :likes
   
   belongs_to :creator, :class_name => 'User'
   belongs_to :caller,  :class_name => 'User', optional: true

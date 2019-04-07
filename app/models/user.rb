@@ -17,6 +17,7 @@ class User < ApplicationRecord
   validates :active,    presence: true
 
   has_many :comments
+  has_many :likes
   # validates :rating,    presence: true, numericality: { greater_than_or_equal_to: 0 , less_than_or_equal_to: 5 }
 
   # validates :name,         presence: true

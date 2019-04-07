@@ -1,4 +1,4 @@
-class Api::V1::CommentsConroller < Api::V1::BaseController
+class Api::V1::CommentsController < Api::V1::BaseController
   before_action :authenticate_request!
 
   def create
@@ -14,9 +14,11 @@ class Api::V1::CommentsConroller < Api::V1::BaseController
   end
 
   def destroy
-    comment = Comment.find(params[:id])
+    comment = Comment.find_by(id: params[:id])
 
-    if comment.commentor != current_user
+    if comment.blank?
+      render status: :bad_request, json: { errors: ["There was no comment with that id!"] }
+    elsif comment.user != current_user
       render status: :unauthorized, json: { errors: ["You are not authorized to delete this comment!"] }
     elsif comment.destroy
       render status: :ok, json: { success: true }
