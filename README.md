@@ -724,6 +724,125 @@ Google login
                       "errors": "[ "User not found", ... ]"
                     }```
 
+## Comments
+
+### Create a comment
+----
+  Creates a comment
+
+* **URL:** <br />
+  /comments/
+
+* **Method:** <br />
+  `POST`
+
+* **Headers**: <br />
+  `Authorization: Bearer <auth_token>`
+
+*  **URL Params**: <br />
+  **Required:**
+  `user_id=[integer]`
+  `reminder_id=[integer]`
+  `content=[string]`
+
+
+
+* **Success Response:**
+  * **Code:** 200 <br />
+    **Content:** ```{ success: true } ```
+ 
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ ... ]"
+                    }```
+
+### Deletes a comment
+----
+  Deletes a comment
+
+* **URL:** <br />
+  /comments/:id
+
+* **Method:** <br />
+  `DELETE`
+
+* **Headers**: <br />
+  `Authorization: Bearer <auth_token>`
+
+*  **URL Params**: <br />
+  **Required:**
+  `id=[integer]`
+
+
+* **Success Response:**
+  * **Code:** 200 <br />
+    **Content:** ```{ success: true } ```
+ 
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ ... ]"
+                    }```
+
+## Likes
+
+### Create a like
+----
+  Creates a like
+
+* **URL:** <br />
+  /likes/
+
+* **Method:** <br />
+  `POST`
+
+* **Headers**: <br />
+  `Authorization: Bearer <auth_token>`
+
+*  **URL Params**: <br />
+  **Required:**
+  `user_id=[integer]`
+  `reminder_id=[integer]`
+
+
+* **Success Response:**
+  * **Code:** 200 <br />
+    **Content:** ```{ success: true } ```
+ 
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ ... ]"
+                    }```
+
+### Deletes a like
+----
+  Deletes a like
+
+* **URL:** <br />
+  /likes/:id
+
+* **Method:** <br />
+  `DELETE`
+
+* **Headers**: <br />
+  `Authorization: Bearer <auth_token>`
+
+*  **URL Params**: <br />
+  **Required:**
+  `id=[integer]`
+
+* **Success Response:**
+  * **Code:** 200 <br />
+    **Content:** ```{ success: true } ```
+ 
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ ... ]"
+                    }```
+
 ## Reminders
 
 ### Create reminder
