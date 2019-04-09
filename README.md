@@ -541,6 +541,50 @@ Google login
                       "errors": "[ "User not found", ... ]"
                     }```
 
+### Get followed friends list
+----
+  Gets list of friends that a user is following. only accessible to current user.
+
+* **URL**
+
+  /users/:id/followed_friends
+
+* **Method:**
+
+  `GET`
+  
+*  **URL Params**
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "friends": [
+                        {
+                            "id": 2,
+                            "email": "aj2@bienz.org",
+                            "name": "AJ Bienz 2",
+                            "bio": null,
+                            "active": "t",
+                            "phone_number": "12602233174",
+                            "ready_to_remind": false,
+                            "facebook_token": null,
+                            "google_token": null,
+                            "profile_picture": null,
+                            "activity_hidden": false,
+                            "device_token": null,
+                            "created_at": "2019-04-09T20:05:40.029Z",
+                            "updated_at": "2019-04-09T20:05:40.029Z"
+                        }
+                    ]
+                }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ "There is no user with that id", ... ]"
+                    }```
+
 ### Get friends list
 ----
   Gets friends list for specified user
@@ -677,6 +721,64 @@ Google login
 * **URL**
 
   /users/:id/unfriend
+
+* **Method:**
+
+  `POST`
+  
+*  **URL Params**
+    `friend_id=[integer]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "success": true
+                  }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ "You are not friends with this user", ... ]"
+                    }```
+
+### Unfollow a user
+----
+  Unfollow user with id=friend_id. user must be friend of currently authenticated user.
+  id param is current user id.
+
+* **URL**
+
+  /users/:id/unfollow
+
+* **Method:**
+
+  `POST`
+  
+*  **URL Params**
+    `friend_id=[integer]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "success": true
+                  }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ "You are not friends with this user", ... ]"
+                    }```
+
+### Follow a user
+----
+  Follow user with id=friend_id. user must be friend of currently authenticated user.
+  id param is current user id.
+
+* **URL**
+
+  /users/:id/follow
 
 * **Method:**
 
