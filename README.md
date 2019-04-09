@@ -342,7 +342,166 @@ Google login
                             "triggered_at": null,
                             "created_at": "2019-02-07T18:41:33.056Z",
                             "updated_at": "2019-02-07T18:41:33.056Z"
-                        }
+                        },
+                        "activity": {
+                          "reminders_created": [
+                              {
+                                  "id": 1,
+                                  "title": "Wake Me Up",
+                                  "description": "Make sure I don't sleep through my exam pls",
+                                  "status": "New",
+                                  "public": true,
+                                  "push": false,
+                                  "automated": false,
+                                  "did_proxy_interact": false,
+                                  "proxy_session_sid": null,
+                                  "creator_id": 2,
+                                  "caller_id": null,
+                                  "caller_rating": null,
+                                  "creator_rating": null,
+                                  "will_trigger_at": "2019-04-15T00:00:00.000Z",
+                                  "triggered_at": null,
+                                  "job_id": 1,
+                                  "created_at": "2019-04-09T20:24:58.511Z",
+                                  "updated_at": "2019-04-09T20:24:58.548Z"
+                              }
+                          ],
+                          "reminders_reminded": []
+                      }
+                    }
+                }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ ... ]"
+                    }```
+
+### Get user profile via email
+----
+  Gets user with email=email profile
+
+* **URL**
+
+  /users/:email
+
+* **Method:**
+
+  `GET`
+  
+*  **URL Params**
+    `none`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "profile": {
+                        "user": {
+                            "id": 1,
+                            "email": "a@b.com",
+                            "name": "aj",
+                            "bio": null,
+                            "active": "t",
+                            "rating": "0.0",
+                            "created_at": "2019-02-07T18:36:39.945Z",
+                            "updated_at": "2019-02-07T18:36:39.945Z"
+                        },
+                        "reminder_count": 1,
+                        "active_reminders": 0,
+                        "times_reminded_others": 0,
+                        "activity": {
+                          "reminders_created": [
+                              {
+                                  "id": 1,
+                                  "title": "Wake Me Up",
+                                  "description": "Make sure I don't sleep through my exam pls",
+                                  "status": "New",
+                                  "public": true,
+                                  "push": false,
+                                  "automated": false,
+                                  "did_proxy_interact": false,
+                                  "proxy_session_sid": null,
+                                  "creator_id": 2,
+                                  "caller_id": null,
+                                  "caller_rating": null,
+                                  "creator_rating": null,
+                                  "will_trigger_at": "2019-04-15T00:00:00.000Z",
+                                  "triggered_at": null,
+                                  "job_id": 1,
+                                  "created_at": "2019-04-09T20:24:58.511Z",
+                                  "updated_at": "2019-04-09T20:24:58.548Z"
+                              }
+                          ],
+                          "reminders_reminded": []
+                      }
+                    }
+                }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ ... ]"
+                    }```
+
+### Get user profile via id
+----
+  Gets user with id=id profile
+
+* **URL**
+
+  /users/profile_by_id/:id
+
+* **Method:**
+
+  `GET`
+  
+*  **URL Params**
+    `none`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "profile": {
+                        "user": {
+                            "id": 1,
+                            "email": "a@b.com",
+                            "name": "aj",
+                            "bio": null,
+                            "active": "t",
+                            "rating": "0.0",
+                            "created_at": "2019-02-07T18:36:39.945Z",
+                            "updated_at": "2019-02-07T18:36:39.945Z"
+                        },
+                        "reminder_count": 1,
+                        "active_reminders": 0,
+                        "times_reminded_others": 0,
+                        "activity": {
+                          "reminders_created": [
+                              {
+                                  "id": 1,
+                                  "title": "Wake Me Up",
+                                  "description": "Make sure I don't sleep through my exam pls",
+                                  "status": "New",
+                                  "public": true,
+                                  "push": false,
+                                  "automated": false,
+                                  "did_proxy_interact": false,
+                                  "proxy_session_sid": null,
+                                  "creator_id": 2,
+                                  "caller_id": null,
+                                  "caller_rating": null,
+                                  "creator_rating": null,
+                                  "will_trigger_at": "2019-04-15T00:00:00.000Z",
+                                  "triggered_at": null,
+                                  "job_id": 1,
+                                  "created_at": "2019-04-09T20:24:58.511Z",
+                                  "updated_at": "2019-04-09T20:24:58.548Z"
+                              }
+                          ],
+                          "reminders_reminded": []
+                      }
                     }
                 }`
 
