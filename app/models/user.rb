@@ -36,6 +36,10 @@ class User < ApplicationRecord
     friend_request.destroy
   end
 
+  def unfriend(user)
+    friends.delete(user)
+  end
+
   def toggle_profile_activity
     update(activity_hidden: !activity_hidden)
   end

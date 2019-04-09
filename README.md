@@ -468,6 +468,34 @@ Google login
                       "errors": "[ "User not found", ... ]"
                     }```
 
+### Unfriend a user
+----
+  Unfriend user with id=friend_id
+
+* **URL**
+
+  /users/:id/unfriend
+
+* **Method:**
+
+  `POST`
+  
+*  **URL Params**
+    `friend_id=[integer]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "success": true
+                  }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ "You are not friends with this user", ... ]"
+                    }```
+
 ### View a list of friend requests received (pending)
 ----
   View a list of friend requests a user received

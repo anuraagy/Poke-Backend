@@ -27,6 +27,7 @@ Rails.application.routes.draw do
         post "send_friend_request",       to: "send_friend_request",       on: :member
         post "accept_friend_request",     to: "accept_friend_request",     on: :member
         post "decline_friend_request",    to: "decline_friend_request",    on: :member
+        post "unfriend",                  to: "unfriend",                  on: :member
 
         post "show_profile_activity", to: "show_profile_activity",    on: :member
         post "toggle_profile_activity", to: "toggle_profile_activity", on: :member
