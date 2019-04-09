@@ -173,7 +173,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       render status: :unauthorized, json: { errors: ["There is no user with that id"] }
     elsif user != current_user
       render status: :forbidden, json: { errors: ["You do not have access to this user"] }
-    elsif user.friends.where(id: friend.id).count <= 0
+    elsif !user.friends_with(friend)
       render status: :bad_request, json: { errors: ["You are not friends with this user"] }
     else
       user.unfriend(friend)
@@ -232,7 +232,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def send_friend_request
     user = User.find_by(id: params[:id])
     friend = User.find_by(id: params[:friend_id])
-    if FriendRequest.where(sender: user).where(receiver: friend).count > 0
+    if user.has_pending_friend_request(friend) || user.friends_with(friend)
       render status: :ok, json: { success: true }
       return
     end

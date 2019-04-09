@@ -37,7 +37,31 @@ class User < ApplicationRecord
   end
 
   def unfriend(user)
+    friend_requests_sent
+      .where(receiver: user)
+      .where(status: 'accepted')
+      .update_all(status: 'unfriended')
+    friend_requests_received
+      .where(sender: user)
+      .where(status: 'accepted')
+      .update_all(status: 'unfriended')
     friends.delete(user)
+    user.friends.delete(self)
+  end
+
+  def friends_with(user)
+    return friends.where(id: user.id).count > 0
+  end
+
+  def has_pending_friend_request(user)
+    return friend_requests_sent.where(receiver: user)
+            .where.not(status: 'accepted')
+            .where.not(status: 'unfriended')
+            .count > 0 ||
+          friend_requests_received.where(sender: user)
+            .where.not(status: 'accepted')
+            .where.not(status: 'unfriended')
+            .count > 0
   end
 
   def toggle_profile_activity
