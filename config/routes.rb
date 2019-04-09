@@ -20,6 +20,7 @@ Rails.application.routes.draw do
         get  'search', to: "search", on: :collection
 
         get  "friends",                   to: "friends",                   on: :member
+        get  "followed_friends",          to: "followed_friends",          on: :member
         get  "friend_requests_sent",      to: "friend_requests_sent",      on: :member
         get  "friend_requests_received",  to: "friend_requests_received",  on: :member
         get  "friend_activity",           to: "friend_activity",           on: :member
@@ -28,6 +29,8 @@ Rails.application.routes.draw do
         post "accept_friend_request",     to: "accept_friend_request",     on: :member
         post "decline_friend_request",    to: "decline_friend_request",    on: :member
         post "unfriend",                  to: "unfriend",                  on: :member
+        post "follow",                    to: "follow",                    on: :member
+        post "unfollow",                  to: "unfollow",                  on: :member
 
         post "show_profile_activity", to: "show_profile_activity",    on: :member
         post "toggle_profile_activity", to: "toggle_profile_activity", on: :member

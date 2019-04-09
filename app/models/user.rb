@@ -49,6 +49,26 @@ class User < ApplicationRecord
     user.friends.delete(self)
   end
 
+  def follow(friend)
+    if !friends_with(friend)
+      errors.add(:friend, "Not friends with that user")
+      return false
+    end
+    friendships.where(friend: friend).update_all(following: true)
+  end
+
+  def unfollow(friend)
+    if !friends_with(friend)
+      errors.add(:friend, "Not friends with that user")
+      return false
+    end
+    friendships.where(friend: friend).update_all(following: false)
+  end
+
+  def followed_friends
+    User.find(friendships.where(following: true).pluck(:friend_id))
+  end
+
   def friends_with(user)
     return friends.where(id: user.id).count > 0
   end
