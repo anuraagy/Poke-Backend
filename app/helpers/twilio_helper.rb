@@ -91,5 +91,12 @@ module TwilioHelper
   #   }
   # }
   
+  def self.automated_call(reminder)
+    @client.calls.create(
+      url: "http://69.174.144.43:3000/api/v1/twilio/twiml?reminder_id=#{reminder.id}",
+      to: "+#{reminder.creator.phone_number}",
+      from: '+15878415439'
+    )
+  end
 
 end

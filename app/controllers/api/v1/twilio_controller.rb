@@ -15,36 +15,19 @@ class Api::V1::TwilioController < Api::V1::BaseController
     head :ok
   end
 
-  def access_token
-    type = twilio_params[:type]
-    token = nil
+  def twiml
+    params.require(:reminder_id)
+    resp = Twilio::TwiML::VoiceResponse.new
+    resp.pause(length: 1)
+    resp.say(voice: "man", message: "Hello, this is an automated reminder from Poke. "\
+                                    "Don't forget about your reminder titled, "\
+                                    "\"#{Reminder.find(params[:reminder_id]).title}\". Goodbye!"
+    )
+    resp.pause(length: 3)
+    resp.play(url: 'http://demo.twilio.com/docs/classic.mp3')
 
-    if type == 'chat' 
-      token =  TwilioHelper::chat_token(params[:identity])
-    else 
-      token =  TwilioHelper::voice_token(params[:identity])
-    end
-
-    puts "Token: #{token}"
-
-    render status: 200, body: token
-  end
-
-  def make_call
-    response = Twilio::TwiML::VoiceResponse.new
-
-    response.dial(callerId: params["to"])
-
-    puts response
-    render status: 200, body: response
-  end
-
-  def place_call
-    render status: 200
-  end
-
-  def twilio_params
-    params.permit(:type)
+    response.headers['Content-Type'] = 'application/xml; charset=utf-8'
+    render plain: resp.to_s
   end
 
 end

@@ -2,9 +2,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :twilio do
-        get  'access_token',  to: 'access_token', on: :collection
-        post "make_call",  to: 'make_call',  on: :collection
-        post "place_call", to: 'place_call', on: :collection
+        post  'twiml',    to: 'twiml',    on: :collection
         post 'callback', to: 'callback', on: :collection
       end
 

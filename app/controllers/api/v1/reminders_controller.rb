@@ -139,6 +139,7 @@ class Api::V1::RemindersController < Api::V1::BaseController
   private
 
   def reminder_params
-    params.permit(:title, :description, :status, :public, :creator_id, :caller_id, :will_trigger_at, :push)
+    params.permit(:title, :description, :status, :public,:creator_id, :caller_id, :will_trigger_at,
+                  :push, :automated)
   end
 end

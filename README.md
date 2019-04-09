@@ -867,6 +867,7 @@ Google login
   `creator_id=[integer]`
   `will_trigger_at=[datetime]`
   `push=[boolean]`
+  `automated=[boolean]`
 
 * **Success Response:**
   * **Code:** 200 <br />

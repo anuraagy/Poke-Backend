@@ -11,8 +11,9 @@ class Reminder < ApplicationRecord
   validates :status,           presence: true
   validates :creator,          presence: true
   validates :will_trigger_at,  presence: true
-  validates_inclusion_of :public, in: [true, false]
-  validates_inclusion_of :push  , in: [true, false]
+  validates_inclusion_of :public     , in: [true, false]
+  validates_inclusion_of :push       , in: [true, false]
+  validates_inclusion_of :automated  , in: [true, false]
 
   validate :valid_trigger_time?
   validate :valid_push_user?
@@ -21,6 +22,12 @@ class Reminder < ApplicationRecord
     #check for push notification
     if self.push && creator.device_token.present?
       push_notification("Don't forget! #{self.title}")
+      return
+    end
+
+    if self.automated
+      TwilioHelper::automated_call(self)
+      update(status: 'triggered')
       return
     end
 
@@ -85,6 +92,7 @@ class Reminder < ApplicationRecord
     n.alert = alert
     n.data = self.as_json
     n.save!
+    update(status: 'triggered')
   end
 
   def valid_trigger_time?
