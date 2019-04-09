@@ -382,6 +382,49 @@ Google login
                       "errors": "[ "User not found", ... ]"
                     }```
 
+### Get friends list
+----
+  Gets friends list for specified user
+
+* **URL**
+
+  /users/:id/friends
+
+* **Method:**
+
+  `GET`
+  
+*  **URL Params**
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{
+                    "friends": [
+                        {
+                            "id": 2,
+                            "email": "aj2@bienz.org",
+                            "name": "AJ Bienz 2",
+                            "bio": null,
+                            "active": "t",
+                            "phone_number": "12602233174",
+                            "ready_to_remind": false,
+                            "facebook_token": null,
+                            "google_token": null,
+                            "profile_picture": null,
+                            "activity_hidden": false,
+                            "device_token": null,
+                            "created_at": "2019-04-09T20:05:40.029Z",
+                            "updated_at": "2019-04-09T20:05:40.029Z"
+                        }
+                    ]
+                }`
+
+* **Error Response:**
+  * **Code:** 400, 404, etc <br />
+    **Content:** ```{
+                      "errors": "[ "There is no user with that id", ... ]"
+                    }```
 
 ### Send a friend request
 ----
