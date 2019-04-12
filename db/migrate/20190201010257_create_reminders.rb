@@ -15,6 +15,7 @@ class CreateReminders < ActiveRecord::Migration[5.2]
 
       t.references :creator, null: false
       t.references :caller
+      t.references :friend
 
       t.integer :caller_rating
       t.integer :creator_rating
@@ -30,5 +31,6 @@ class CreateReminders < ActiveRecord::Migration[5.2]
 
     add_foreign_key :reminders, :users, column: :creator_id, primary_key: :id
     add_foreign_key :reminders, :users, column: :caller_id,  primary_key: :id
+    add_foreign_key :reminders, :users, column: :friend_id,  primary_key: :id
   end
 end

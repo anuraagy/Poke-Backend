@@ -99,4 +99,17 @@ module TwilioHelper
     )
   end
 
+  # def self.mask_number(reminder, creator, reminding_user)
+  #   session = self.create_proxy_session
+  #   reminder.update(proxy_session_sid: session.sid)
+  #   self.add_participant(session.sid, creator)
+  #   participant = self.add_participant(session.sid, reminding_user)
+  #   Delayed::Job.enqueue(
+  #     ReminderBackupJob.new(id),
+  #     0,
+  #     Time.now + 3.minutes + 30.seconds
+  #   )
+  #   participant.proxy_identifier
+  # end
+
 end

@@ -81,6 +81,7 @@ ActiveRecord::Schema.define(version: 2019_04_07_201548) do
     t.string "proxy_session_sid"
     t.bigint "creator_id", null: false
     t.bigint "caller_id"
+    t.bigint "friend_id"
     t.integer "caller_rating"
     t.integer "creator_rating"
     t.datetime "will_trigger_at", null: false
@@ -90,6 +91,7 @@ ActiveRecord::Schema.define(version: 2019_04_07_201548) do
     t.datetime "updated_at", null: false
     t.index ["caller_id"], name: "index_reminders_on_caller_id"
     t.index ["creator_id"], name: "index_reminders_on_creator_id"
+    t.index ["friend_id"], name: "index_reminders_on_friend_id"
   end
 
   create_table "reports", force: :cascade do |t|
@@ -192,4 +194,5 @@ ActiveRecord::Schema.define(version: 2019_04_07_201548) do
 
   add_foreign_key "reminders", "users", column: "caller_id"
   add_foreign_key "reminders", "users", column: "creator_id"
+  add_foreign_key "reminders", "users", column: "friend_id"
 end

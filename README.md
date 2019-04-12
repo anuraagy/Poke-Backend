@@ -1200,6 +1200,7 @@ Google login
   `will_trigger_at=[datetime]`
   `push=[boolean]`
   `automated=[boolean]`
+  `friend_id=[integer]`
 
 * **Success Response:**
   * **Code:** 200 <br />
@@ -1211,7 +1212,9 @@ Google login
                       "creator_id": 1,
                       "caller_id": null,
                       "will_trigger_at": "2018-10-12T00:00:00Z",
-                      "push": false
+                      "push": false,
+                      "automated": false,
+                      "friend_id": null
                     } ```
  
 * **Error Response:**
@@ -1220,6 +1223,25 @@ Google login
                       "errors": "[ ... ]"
                     }```
 
+
+### Create reminder with friend specified
+Create a reminder with friend_id set to the id of the friend you wish to have remind you.
+When the reminder triggers, the friend will receive a push notification with the following data
+in the body/payload:
+```{
+{
+    "type": "friend_reminder",
+    "phone_number": "1xxxxxxxxxx",
+    "reminder": {
+        "id": 9,
+        "title": "Wake Me Up",
+        "description": "Make sure I don't sleep through my exam pls",
+        ...
+    }
+}
+}```
+When the friend interacts with the reminder, they should be shown the reminder details and
+promted to call the phone_number in the body.
 
 ### Update reminder
 ----

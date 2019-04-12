@@ -1,11 +1,13 @@
 class Reminder < ApplicationRecord
   include TwilioHelper
+  include RpushHelper
 
   has_many :comments
   has_many :likes
   
-  belongs_to :creator, :class_name => 'User'
-  belongs_to :caller,  :class_name => 'User', optional: true
+  belongs_to :creator, class_name: 'User'
+  belongs_to :caller,  class_name: 'User', optional: true
+  belongs_to :friend,  class_name: 'User', optional: true
 
   validates :title,            presence: true
   validates :status,           presence: true
@@ -17,6 +19,7 @@ class Reminder < ApplicationRecord
 
   validate :valid_trigger_time?
   validate :valid_push_user?
+  validate :valid_reminder_type?
 
   def send_reminder!
     #check for push notification
@@ -27,6 +30,22 @@ class Reminder < ApplicationRecord
 
     if self.automated
       TwilioHelper::automated_call(self)
+      update(status: 'triggered')
+      return
+    end
+
+    if friend.present?
+      n = Rpush::Apns::Notification.new
+      n.app = RpushHelper::app
+      n.device_token = friend.device_token
+      n.alert = "Don't forget to remind your friend #{creator.name} about their reminder,"\
+                "\"#{title}\""
+      data = {}
+      data['type'] = 'friend_reminder'
+      data['phone_number'] = creator.phone_number
+      data['reminder'] = self.as_json
+      n.data = data
+      n.save!
       update(status: 'triggered')
       return
     end
@@ -77,20 +96,13 @@ class Reminder < ApplicationRecord
   def push_notification(alert)
     return if Rails.env.test?
     n = Rpush::Apns::Notification.new
-    n.app = Rpush::Apns::App.find_by_name('poke_ios')
-    if n.app.nil?
-      apns_file = File.join(Rails.root, 'development.pem')
-      n.app = Rpush::Apns::App.new
-      n.app.name = 'poke_ios'
-      n.app.certificate = File.read(apns_file)
-      n.app.environment = 'development' # APNs environment.
-      n.app.password = '' #Rails.application.credentials.apns_cert_pw
-      n.app.connections = 1
-      n.app.save!
-    end
+    n.app = RpushHelper::app
     n.device_token = creator.device_token
     n.alert = alert
-    n.data = self.as_json
+    data = {}
+    data['type'] = 'reminder'
+    data['reminder'] = self.as_json
+    n.data = data
     n.save!
     update(status: 'triggered')
   end
@@ -99,6 +111,16 @@ class Reminder < ApplicationRecord
     #if will_trigger_at.present? && will_trigger_at < Time.now + 5.minutes
     #  errors.add(:will_trigger_at, "Has to be at least 5 minutes in the future")
     #end
+  end
+
+  def valid_reminder_type?
+    if push && (automated || friend.present?)
+      errors.add(:push, "cannot have more than one of push, automated, and friend set")
+    elsif automated && (push || friend.present?)
+      errors.add(:push, "cannot have more than one of push, automated, and friend set")
+    elsif friend.present? && (automated || push)
+      errors.add(:push, "cannot have more than one of push, automated, and friend set")
+    end
   end
 
   def valid_push_user?
