@@ -102,14 +102,49 @@ class User < ApplicationRecord
     friends.map { |friend|  friend.activity.merge({ name: friend.name }) } 
   end
 
-  def activity
-    return if activity_hidden
-    
-    activity_hash = {}
-    activity_hash["reminders_created"] = reminders_created.to_a.select { |x| x.public }
-    activity_hash["reminders_reminded"] = reminders_reminded.to_a.select { |x| x.public }
+  def activity    
+    # activity_hash = {}
+    # activity_hash["reminders_created"] = reminders_created.to_a.select { |x| x.public }
+    # activity_hash["reminders_reminded"] = reminders_reminded.to_a.select { |x| x.public }
 
-    activity_hash
+    # activity_hash
+
+    return if activity_hidden
+
+    activity_array = []
+
+    reminders_created.each do |reminder|
+      return unless reminder.public
+
+      activity_hash = {
+        id: reminder.id,
+        title: reminder.title,
+        description: reminder.description,
+        type: "reminder-created",
+        user_id: id,
+        user_name: name,
+        time: reminder.created_at
+      }
+
+      activity_array << activity_hash
+    end
+
+    reminders_reminded.each do |reminder|
+      return unless reminder.public
+
+      activity_hash = {
+        id: reminder.id,
+        title: reminder.title,
+        description: reminder.description,
+        type: "reminder-reminded",
+        user_id: id,
+        user_name: name,
+        time: reminder.created_at
+      }
+
+      activity_array << activity_hash
+    end
+
   end
 
   def self.login_or_create_from_facebook(facebook_params)
