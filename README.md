@@ -1215,7 +1215,7 @@ Google login
                       "push": false,
                       "automated": false,
                       "friend_id": null
-                    } ```
+                    }```
  
 * **Error Response:**
   * **Code:** 400, 404, etc <br />
