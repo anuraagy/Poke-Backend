@@ -1229,7 +1229,6 @@ Create a reminder with friend_id set to the id of the friend you wish to have re
 When the reminder triggers, the friend will receive a push notification with the following data
 in the body/payload:
 ```{
-{
     "type": "friend_reminder",
     "phone_number": "1xxxxxxxxxx",
     "reminder": {
@@ -1238,7 +1237,6 @@ in the body/payload:
         "description": "Make sure I don't sleep through my exam pls",
         ...
     }
-}
 }```
 When the friend interacts with the reminder, they should be shown the reminder details and
 promted to call the phone_number in the body.
