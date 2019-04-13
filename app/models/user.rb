@@ -99,7 +99,7 @@ class User < ApplicationRecord
   end
 
   def friend_activity
-    friends.map { |friend|  friend.activity.merge({ name: friend.name }) } 
+    friends.map{|friend| friend.activity}.flatten
   end
 
   def activity    
@@ -144,7 +144,7 @@ class User < ApplicationRecord
 
       activity_array << activity_hash
     end
-
+    activity_array
   end
 
   def self.login_or_create_from_facebook(facebook_params)
