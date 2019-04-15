@@ -132,7 +132,7 @@ class Api::V1::RemindersController < Api::V1::BaseController
     if reminder.blank?
       render status: :bad_request, json: { errors: ["There is no reminder with that id!"] }
     else
-      render status: :ok, json: { comments: reminder.comments.as_json }
+      render status: :ok, json: { comments: reminder.comments.as_json(includes: { user: { only: :name } }) }
     end
   end
 
