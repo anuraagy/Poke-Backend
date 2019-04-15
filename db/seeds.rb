@@ -9,6 +9,7 @@ user_params = {
   name: "Test",
   email: "test@test.com",
   password: "Password",
+  phone_number: "1234567890"
 }
 
 User.create!(user_params)
