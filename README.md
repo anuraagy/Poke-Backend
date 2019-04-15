@@ -1562,7 +1562,7 @@ and the reminder in the payload. E.g.:
   * **Code:** 200 <br />
     **Content:** `{ 
                     "comments": [
-                      { content: "Comment 1", user_id: 1, reminder_id: 1 }
+                      { content: "Comment 1", user_id: 1, reminder_id: 1, id: 1, user_name: "Name" }
                      ]
                   }`
   
