@@ -1200,6 +1200,7 @@ Google login
   `will_trigger_at=[datetime]`
   `push=[boolean]`
   `automated=[boolean]`
+  `textable=[boolean]`
   `friend_id=[integer]`
 
 * **Success Response:**
@@ -1214,6 +1215,7 @@ Google login
                       "will_trigger_at": "2018-10-12T00:00:00Z",
                       "push": false,
                       "automated": false,
+                      "textable": false,
                       "friend_id": null
                     }```
  
