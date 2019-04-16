@@ -100,7 +100,7 @@ module TwilioHelper
   end
 
   def self.automated_sms(reminder)
-    @client.api.account.messages.create(
+    @client.messages.create(
       from: '+15878415439',
       to: "+#{reminder.creator.phone_number}",
       body: "Title: #{reminder.title} Description: #{reminder.description}"
