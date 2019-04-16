@@ -34,6 +34,12 @@ class Reminder < ApplicationRecord
       return
     end
 
+    if self.textable
+      TwilioHelper::automated_sms(self)
+      update(status: 'triggered')
+      return
+    end
+
     if friend.present?
       n = Rpush::Apns::Notification.new
       n.app = RpushHelper::app
@@ -105,6 +111,10 @@ class Reminder < ApplicationRecord
     n.data = data
     n.save!
     update(status: 'triggered')
+  end
+
+  def send_text_reminder
+
   end
 
   def valid_trigger_time?

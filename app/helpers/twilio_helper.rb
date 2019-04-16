@@ -99,6 +99,14 @@ module TwilioHelper
     )
   end
 
+  def self.automated_sms(reminder)
+    @client.api.account.messages.create(
+      from: '+15878415439',
+      to: "+#{reminder.creator.phone_number}",
+      body: "Title: #{reminder.title} Description: #{reminder.description}"
+    )
+  end
+
   # def self.mask_number(reminder, creator, reminding_user)
   #   session = self.create_proxy_session
   #   reminder.update(proxy_session_sid: session.sid)
