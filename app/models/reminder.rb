@@ -21,6 +21,27 @@ class Reminder < ApplicationRecord
   validate :valid_push_user?
   validate :valid_reminder_type?
 
+  def self.stats 
+    daily = Reminder.where(:created_at => Time.now.beginning_of_day..Time.now.end_of_day)
+    weekly = Reminder.where(:created_at => 1.week.ago.beginning_of_day..Time.now.end_of_day)
+    monthly = Reminder.where(:created_at => 1.month.ago.beginning_of_day..Time.now.end_of_day)
+
+    {
+      daily: {
+        num_reminders_created: daily.count,
+        num_people_reminded: daily.where(status: "triggered").count
+      },
+      weekly: {
+        num_reminders_created: weekly.count,
+        num_people_reminded: weekly.where(status: "triggered").count
+      },
+      monthly: {
+        num_reminders_created: monthly.count,
+        num_people_reminded: monthly.where(status: "triggered").count
+      }
+    }
+  end
+
   def send_reminder!
     #check for push notification
     if self.push && creator.device_token.present?

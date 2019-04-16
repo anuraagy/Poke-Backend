@@ -1621,3 +1621,49 @@ and the reminder in the payload. E.g.:
                       ]
                     }
                   }`
+
+### Reminder stats
+----
+  Get stats for all reminders
+
+* **URL**
+
+  /reminders/stats
+
+* **Method:**
+  `GET`
+  
+  * **Headers**: <br />
+  `Authorization: Bearer <auth_token>`
+
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{ 
+                     "stats": { 
+                        "daily": {
+                          "num_reminders_created": 0, 
+                          "num_people_reminded": 0
+                        }, 
+                        "weekly": {
+                          "num_reminders_created" =>1,
+                          "num_people_reminded"=>0
+                        }, 
+                        "monthly": {
+                          "num_reminders_created" =>1,
+                          "num_people_reminded"=>0
+                        }
+                  }`
+  
+* **Error Response:**
+
+  * **Code:** 400 <br />
+    **Content:** `{
+                    "errors": 
+                      [
+                        "Reminder does not exist or you do not have access",
+                        "...",
+                        ..
+                      ]
+                  }`

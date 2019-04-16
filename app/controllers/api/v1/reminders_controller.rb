@@ -136,6 +136,10 @@ class Api::V1::RemindersController < Api::V1::BaseController
     end
   end
 
+  def stats
+    render status: :ok, json: { stats: Reminder.stats.as_json }
+  end
+
   private
 
   def reminder_params

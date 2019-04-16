@@ -54,6 +54,8 @@ Rails.application.routes.draw do
         post 'complete', to: 'complete', on: :member
         get  'unrated',  to: 'unrated',  on: :collection
 
+        get "stats", to: "stats", on: :collection
+
         get 'likes', to: 'likes', on: :member
         get 'comments', to: 'comments', on: :member
       end
