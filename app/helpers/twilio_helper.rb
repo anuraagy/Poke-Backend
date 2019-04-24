@@ -70,7 +70,7 @@ module TwilioHelper
       .participants
       .create(
         friendly_name: user.email,
-        identifier: "+#{user.phone_number}"
+        identifier: "+#{user.phone_number[0] == '1' ? user.phone_number : '1' + user.phone_number}"
       )
   end
   # {
@@ -94,7 +94,7 @@ module TwilioHelper
   def self.automated_call(reminder)
     @client.calls.create(
       url: "http://69.174.144.43:3000/api/v1/twilio/twiml?reminder_id=#{reminder.id}",
-      to: "+#{reminder.creator.phone_number}",
+      to: "+#{reminder.creator.phone_number[0] == 1 ? reminder.creator.phone_number : '1' + reminder.creator.phone_number }",
       from: '+15878415439'
     )
   end
@@ -102,7 +102,7 @@ module TwilioHelper
   def self.automated_sms(reminder)
     @client.messages.create(
       from: '+15878415439',
-      to: "+#{reminder.creator.phone_number}",
+      to: "+#{reminder.creator.phone_number[0] == 1 ? reminder.creator.phone_number : '1' + reminder.creator.phone_number }",
       body: "Title: #{reminder.title}\nDescription: #{reminder.description}"
     )
   end
