@@ -22,6 +22,7 @@ class Api::V1::UsersController < Api::V1::BaseController
         if user.present?
           profile = {}
           profile['user'] = UserSerializer.new(user)
+          profile['friends_with_current_user'] = current_user.friends_with(user)
           profile['reminder_count'] = Reminder.where(creator: user).count
           profile['active_reminders'] = Reminder.where(creator: user).where.not(status: 'triggered').count
           profile['times_reminded_others'] = Reminder.where(caller: user).count
@@ -38,6 +39,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     if user.present?
       profile = {}
       profile['user'] = UserSerializer.new(user)
+      profile['friends_with_current_user'] = current_user.friends_with(user)
       profile['reminder_count'] = Reminder.where(creator: user).count
       profile['active_reminders'] = Reminder.where(creator: user).where.not(status: 'triggered').count
       profile['times_reminded_others'] = Reminder.where(caller: user).count

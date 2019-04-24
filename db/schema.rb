@@ -77,6 +77,7 @@ ActiveRecord::Schema.define(version: 2019_04_07_201548) do
     t.boolean "public", default: true, null: false
     t.boolean "push", default: false, null: false
     t.boolean "automated", default: false, null: false
+    t.boolean "textable", default: false, null: false
     t.boolean "did_proxy_interact", default: false, null: false
     t.string "proxy_session_sid"
     t.bigint "creator_id", null: false
