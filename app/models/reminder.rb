@@ -69,6 +69,7 @@ class Reminder < ApplicationRecord
                 "\"#{title}\""
       data = {}
       data['type'] = 'friend_reminder'
+      data['name'] = creator.name
       data['phone_number'] = creator.phone_number
       data['reminder'] = self.as_json
       n.data = data
