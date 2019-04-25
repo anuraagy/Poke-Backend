@@ -103,7 +103,7 @@ module TwilioHelper
     @client.messages.create(
       from: '+15878415439',
       to: "+#{reminder.creator.phone_number[0] == 1 ? reminder.creator.phone_number : '1' + reminder.creator.phone_number }",
-      body: "Title: #{reminder.title}\nDescription: #{reminder.description}"
+      body: "Don't forget! #{reminder.title}"
     )
   end
 
