@@ -99,7 +99,7 @@ class User < ApplicationRecord
   end
 
   def friend_activity
-    (friends.map{|friend| friend.activity} << self.activity).flatten.sort_by { |hsh| hsh[:time] }.reverse
+    (followed_friends.map{|friend| friend.activity} << self.activity).flatten.sort_by { |hsh| hsh[:time] }.reverse
   end
 
   def activity    
